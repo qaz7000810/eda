@@ -4,200 +4,283 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AR6 臺灣氣候變遷 3D 地圖</title>
-    <style>
-      :root {
-        --page-bg: #07111f;
-        --panel-bg: rgba(13, 22, 38, 0.88);
-        --panel-border: rgba(124, 155, 199, 0.22);
-        --text-main: #f3f6fb;
-        --text-soft: #aab8cf;
-        --accent: #ffb74d;
-        --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        font-family: "Segoe UI", "Noto Sans", sans-serif;
-        color: var(--text-main);
-        background:
-          radial-gradient(circle at top left, rgba(54, 90, 140, 0.38), transparent 28%),
-          radial-gradient(circle at top right, rgba(255, 183, 77, 0.18), transparent 22%),
-          linear-gradient(180deg, #08111d 0%, #0c1829 100%);
-      }
-
-      .page {
-        width: min(1280px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 32px 0 48px;
-      }
-
-      .hero {
-        margin-bottom: 24px;
-        padding: 28px;
-        border: 1px solid var(--panel-border);
-        border-radius: 24px;
-        background: var(--panel-bg);
-        box-shadow: var(--shadow);
-      }
-
-      .hero h1 {
-        margin: 0 0 10px;
-        font-size: clamp(2rem, 4vw, 3.2rem);
-        line-height: 1.05;
-        letter-spacing: 0.02em;
-      }
-
-      .hero p {
-        margin: 0;
-        max-width: 900px;
-        color: var(--text-soft);
-        font-size: 1rem;
-        line-height: 1.7;
-      }
-
-      .hero strong {
-        color: var(--accent);
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 20px;
-      }
-
-      .card {
-        border: 1px solid var(--panel-border);
-        border-radius: 22px;
-        background: var(--panel-bg);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-
-      .card-header {
-        padding: 18px 20px 14px;
-        border-bottom: 1px solid rgba(124, 155, 199, 0.14);
-      }
-
-      .eyebrow {
-        display: inline-block;
-        margin-bottom: 8px;
-        color: var(--accent);
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .card h2 {
-        margin: 0 0 8px;
-        font-size: 1.25rem;
-      }
-
-      .card p {
-        margin: 0;
-        color: var(--text-soft);
-        line-height: 1.6;
-      }
-
-      iframe {
-        display: block;
-        width: 100%;
-        height: 540px;
-        border: 0;
-        background: #04070b;
-      }
-
-      .footer {
-        margin-top: 20px;
-        color: var(--text-soft);
-        font-size: 0.92rem;
-        line-height: 1.6;
-      }
-
-      code {
-        color: #ffe7b8;
-      }
-
-      @media (max-width: 720px) {
-        .page {
-          width: min(100% - 20px, 1280px);
-          padding-top: 20px;
-        }
-
-        .hero,
-        .card-header {
-          padding-left: 18px;
-          padding-right: 18px;
-        }
-
-        iframe {
-          height: 460px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="page">
-      <section class="hero">
-        <h1>AR6 臺灣氣候變遷 3D 地圖</h1>
+    <div class="site-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="hero-kicker">DATA SCIENCE MIDTERM PROJECT</p>
+          <h1>AR6 臺灣氣候變遷 3D 地圖展示</h1>
+          <p class="hero-lead">
+            本網站以 TCCIP AR6 氣候變遷關鍵指標資料為基礎，整合 Rx1day 與
+            TX90p 的空間視覺化與統計圖表，呈現觀測基期、未來高排放情境，以及
+            未來相對基期的變化。
+          </p>
+        </div>
+
+        <nav class="hero-nav" aria-label="頁面導覽">
+          <a href="#overview">研究說明</a>
+          <a href="#maps">地圖展示</a>
+          <a href="#charts">統計圖表</a>
+          <a href="#findings">初步結論</a>
+          <a href="#next-steps">後續方向</a>
+        </nav>
+      </header>
+
+      <main class="page-content">
+        <section id="overview" class="section-block">
+          <div class="section-heading">
+            <p class="section-kicker">Overview</p>
+            <h2>研究背景與資料來源</h2>
+            <p>
+              研究聚焦於極端降雨與高溫指標在臺灣的空間分布差異，並以
+              SSP5-8.5_2081-2100 作為未來情境示範。資料使用 TCCIP AR6
+              氣候變遷關鍵指標 CSV，將無效值 -99.9 轉換為 NaN 後進行分析。
+            </p>
+          </div>
+
+          <div class="info-grid">
+            <article class="info-card">
+              <h3>研究問題</h3>
+              <p>
+                臺灣各地在未來高排放情境下，極端降雨是否有顯著增加？暖晝天數與
+                極端降雨之間是否存在可觀察的關聯？
+              </p>
+            </article>
+            <article class="info-card">
+              <h3>核心指標</h3>
+              <p>
+                目前網站以年最大一日降雨量 Rx1day 與暖晝天數 TX90p 為主，後續可
+                延伸到 PRCPTOT、SDII、CDD、CWD 與 HWDI。
+              </p>
+            </article>
+            <article class="info-card">
+              <h3>視覺化方法</h3>
+              <p>
+                地圖採用 PyDeck 的 2D 與 3D 圖層，統計圖使用 Plotly 輸出成獨立
+                HTML，方便直接嵌入 GitHub Pages。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="maps" class="section-block">
+          <div class="section-heading">
+            <p class="section-kicker">Maps</p>
+            <h2>地圖展示</h2>
+            <p>
+              下列地圖依序呈現 Rx1day 的觀測基期、未來高排放情境，以及未來相對
+              基期的變化量。2D 地圖強調空間分布，3D 地圖強調數值高低與視覺對比。
+            </p>
+          </div>
+
+          <div class="media-grid media-grid-two">
+            <article class="media-card">
+              <div class="media-copy">
+                <p class="card-kicker">Map A1</p>
+                <h3>Baseline Rx1day 2D Map</h3>
+                <p>
+                  以 OBS 1995-2014 為基準，顯示全臺年最大一日降雨量的空間分布。
+                </p>
+              </div>
+              <iframe
+                title="Baseline Rx1day 2D Map"
+                src="./output/maps/rx1day_baseline_2d.html"
+                loading="lazy"
+              ></iframe>
+            </article>
+
+            <article class="media-card">
+              <div class="media-copy">
+                <p class="card-kicker">Map A2</p>
+                <h3>Baseline Rx1day 3D Map</h3>
+                <p>
+                  使用 3D 柱狀高度強化基期雨量差異，方便快速辨識高值熱區。
+                </p>
+              </div>
+              <iframe
+                title="Baseline Rx1day 3D Map"
+                src="./output/maps/rx1day_baseline_3d.html"
+                loading="lazy"
+              ></iframe>
+            </article>
+
+            <article class="media-card">
+              <div class="media-copy">
+                <p class="card-kicker">Map B1</p>
+                <h3>Future Rx1day 2D Map</h3>
+                <p>
+                  以 SSP5-8.5_2081-2100 示範世紀末高排放情境下的空間分布。
+                </p>
+              </div>
+              <iframe
+                title="Future Rx1day 2D Map"
+                src="./output/maps/rx1day_future_2d.html"
+                loading="lazy"
+              ></iframe>
+            </article>
+
+            <article class="media-card">
+              <div class="media-copy">
+                <p class="card-kicker">Map B2</p>
+                <h3>Future Rx1day 3D Map</h3>
+                <p>
+                  透過 3D 高度對比未來極端降雨的潛在增幅，呈現更強烈的視覺差異。
+                </p>
+              </div>
+              <iframe
+                title="Future Rx1day 3D Map"
+                src="./output/maps/rx1day_future_3d.html"
+                loading="lazy"
+              ></iframe>
+            </article>
+          </div>
+
+          <article class="media-card media-card-wide">
+            <div class="media-copy">
+              <p class="card-kicker">Map C</p>
+              <h3>Change Map</h3>
+              <p>
+                顯示 SSP5-8.5_2081-2100 相對於 OBS 1995-2014 的變化量。冷暖雙向色帶
+                用於辨識相對增加與減少的區域。
+              </p>
+            </div>
+            <iframe
+              title="Rx1day Change Map"
+              src="./output/maps/rx1day_change.html"
+              loading="lazy"
+            ></iframe>
+          </article>
+        </section>
+
+        <section id="charts" class="section-block">
+          <div class="section-heading">
+            <p class="section-kicker">Charts</p>
+            <h2>統計圖表</h2>
+            <p>
+              除了地圖之外，網站也加入情境比較、分布比較與跨指標關聯圖，以補足空間
+              視覺化之外的統計視角。
+            </p>
+          </div>
+
+          <div class="media-grid media-grid-two">
+            <article class="media-card">
+              <div class="media-copy">
+                <p class="card-kicker">Chart 1</p>
+                <h3>SSP 比較圖</h3>
+                <p>
+                  比較四種長期情境在 2081-2100 的 Rx1day 全臺有效格點平均值。
+                </p>
+              </div>
+              <iframe
+                title="Rx1day SSP Compare"
+                src="./output/charts/rx1day_ssp_compare.html"
+                loading="lazy"
+              ></iframe>
+            </article>
+
+            <article class="media-card">
+              <div class="media-copy">
+                <p class="card-kicker">Chart 2</p>
+                <h3>Rx1day Boxplot</h3>
+                <p>
+                  以 boxplot 觀察四種情境下的全臺格點分布，補充平均值之外的離散程度。
+                </p>
+              </div>
+              <iframe
+                title="Rx1day Boxplot"
+                src="./output/charts/rx1day_boxplot.html"
+                loading="lazy"
+              ></iframe>
+            </article>
+          </div>
+
+          <article class="media-card media-card-wide">
+            <div class="media-copy">
+              <p class="card-kicker">Chart 3</p>
+              <h3>TX90p vs Rx1day 散佈圖</h3>
+              <p>
+                將 TX90p 與 Rx1day 的 SSP5-8.5_2081-2100 同格點資料配對，觀察暖晝天數
+                增加是否伴隨極端降雨變化，並加入趨勢線與相關係數。
+              </p>
+            </div>
+            <iframe
+              title="TX90p vs Rx1day Scatter"
+              src="./output/charts/tx90p_vs_rx1day.html"
+              loading="lazy"
+            ></iframe>
+          </article>
+        </section>
+
+        <section id="findings" class="section-block">
+          <div class="section-heading">
+            <p class="section-kicker">Findings</p>
+            <h2>初步發現</h2>
+            <p>
+              以下內容作為期中報告展示用的初步觀察，後續仍可配合更多指標與行政區尺度
+              聚合結果進一步深化。
+            </p>
+          </div>
+
+          <div class="info-grid">
+            <article class="info-card">
+              <h3>空間差異明顯</h3>
+              <p>
+                從 2D 與 3D 地圖可快速辨識高值區與低值區，顯示極端降雨在不同地形與
+                區域條件下存在明顯差異。
+              </p>
+            </article>
+            <article class="info-card">
+              <h3>情境差異可比較</h3>
+              <p>
+                SSP 比較圖與 boxplot 提供跨情境的整體分布視角，有助於理解未來不同排放
+                路徑下的平均值與變異程度。
+              </p>
+            </article>
+            <article class="info-card">
+              <h3>跨指標關係值得追蹤</h3>
+              <p>
+                TX90p 與 Rx1day 的散佈圖可作為高溫與極端降雨關聯的起點，後續可加入更多
+                時段與情境檢視穩定性。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="next-steps" class="section-block">
+          <div class="section-heading">
+            <p class="section-kicker">Next Steps</p>
+            <h2>後續研究方向</h2>
+            <p>
+              下一階段可將更多指標與行政區層級分析納入展示，並補強模型不確定性與區域
+              差異的討論。
+            </p>
+          </div>
+
+          <div class="next-steps-list">
+            <article class="next-step">
+              <h3>擴充指標</h3>
+              <p>加入 PRCPTOT、SDII、CDD、CWD、HWDI 等指標，補足降雨與熱風險面向。</p>
+            </article>
+            <article class="next-step">
+              <h3>加強比較維度</h3>
+              <p>比較不同時段與不同情境，並加入區域平均或行政區統計摘要。</p>
+            </article>
+            <article class="next-step">
+              <h3>深化報告敘事</h3>
+              <p>結合文獻回顧、政策意涵與方法限制，讓網站不只展示圖，也能支撐論述。</p>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="page-footer">
         <p>
-          這個頁面展示 <strong>Rx1day</strong> 的三張互動式 PyDeck 3D 地圖，
-          分別對應觀測基期、未來情境與變化量。如果你想展示其他變數，例如
-          <code>tx90p</code> 或 <code>prcptot</code>，只要重新執行
-          <code>python src/make_3d_map.py</code> 產生對應 HTML，並把 iframe
-          的檔名改成新的輸出結果即可。
+          網站使用 GitHub Pages 靜態部署，所有地圖與圖表皆以相對路徑載入
+          <code>output/maps/</code> 與 <code>output/charts/</code> 內的 HTML。
         </p>
-      </section>
-
-      <section class="grid">
-        <article class="card">
-          <div class="card-header">
-            <span class="eyebrow">基期</span>
-            <h2>OBS 1995-2014</h2>
-            <p>臺灣 AR6 Rx1day 的觀測基準期分布。</p>
-          </div>
-          <iframe
-            title="Rx1day 基期 3D 地圖"
-            src="./output/rx1day_baseline_3d.html"
-            loading="lazy"
-          ></iframe>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <span class="eyebrow">未來</span>
-            <h2>SSP5-8.5 2081-2100</h2>
-            <p>高排放情境下，世紀末期的未來氣候推估結果。</p>
-          </div>
-          <iframe
-            title="Rx1day 未來情境 3D 地圖"
-            src="./output/rx1day_ssp585_3d.html"
-            loading="lazy"
-          ></iframe>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <span class="eyebrow">變化量</span>
-            <h2>未來減去基期</h2>
-            <p>以雙向色帶呈現相對於觀測基期的增加或減少。</p>
-          </div>
-          <iframe
-            title="Rx1day 變化量 3D 地圖"
-            src="./output/rx1day_change_3d.html"
-            loading="lazy"
-          ></iframe>
-        </article>
-      </section>
-
-      <p class="footer">
-        部署到 GitHub Pages 時，請讓 <code>index.html</code> 位於網站根目錄，
-        並將輸出的地圖 HTML 保留在 <code>output/</code> 資料夾中。
-      </p>
-    </main>
+      </footer>
+    </div>
   </body>
 </html>

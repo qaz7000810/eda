@@ -1,4 +1,8 @@
 pandas
+numpy
 geopandas
 pydeck
 leafmap
+plotly
+matplotlib
+shapely
