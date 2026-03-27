@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from io import StringIO
 
 import geopandas as gpd
 import numpy as np
@@ -93,7 +94,11 @@ def clean_numeric(series: pd.Series) -> pd.Series:
 def load_and_prepare_data(
     csv_path: Path, baseline_col: str, future_col: str
 ) -> tuple[pd.DataFrame, gpd.GeoDataFrame]:
-    df = pd.read_csv(csv_path, skipinitialspace=True)
+    normalized_lines = []
+    for raw_line in csv_path.read_text(encoding="utf-8").splitlines():
+        normalized_lines.append(raw_line.rstrip().rstrip(","))
+
+    df = pd.read_csv(StringIO("\n".join(normalized_lines)), skipinitialspace=True)
     df.columns = [column.strip() for column in df.columns]
 
     required_columns = ["LON", "LAT", baseline_col, future_col]
