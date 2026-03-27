@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-Hant">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AR6 Climate 3D Maps</title>
+    <title>AR6 臺灣氣候變遷 3D 地圖</title>
     <style>
       :root {
         --page-bg: #07111f;
@@ -143,25 +143,25 @@
   <body>
     <main class="page">
       <section class="hero">
-        <h1>AR6 Taiwan Climate 3D Maps</h1>
+        <h1>AR6 臺灣氣候變遷 3D 地圖</h1>
         <p>
-          This page embeds three interactive PyDeck maps for
-          <strong>Rx1day</strong>. Replace the iframe sources with another
-          exported variable such as <code>tx90p</code> or <code>prcptot</code>
-          after you run <code>python src/make_3d_map.py</code> with a different
-          CSV file.
+          這個頁面展示 <strong>Rx1day</strong> 的三張互動式 PyDeck 3D 地圖，
+          分別對應觀測基期、未來情境與變化量。如果你想展示其他變數，例如
+          <code>tx90p</code> 或 <code>prcptot</code>，只要重新執行
+          <code>python src/make_3d_map.py</code> 產生對應 HTML，並把 iframe
+          的檔名改成新的輸出結果即可。
         </p>
       </section>
 
       <section class="grid">
         <article class="card">
           <div class="card-header">
-            <span class="eyebrow">Baseline</span>
+            <span class="eyebrow">基期</span>
             <h2>OBS 1995-2014</h2>
-            <p>Observed reference period for Taiwan AR6 Rx1day.</p>
+            <p>臺灣 AR6 Rx1day 的觀測基準期分布。</p>
           </div>
           <iframe
-            title="Rx1day Baseline 3D Map"
+            title="Rx1day 基期 3D 地圖"
             src="./output/rx1day_baseline_3d.html"
             loading="lazy"
           ></iframe>
@@ -169,12 +169,12 @@
 
         <article class="card">
           <div class="card-header">
-            <span class="eyebrow">Future</span>
+            <span class="eyebrow">未來</span>
             <h2>SSP5-8.5 2081-2100</h2>
-            <p>Late-century high-emission scenario projection.</p>
+            <p>高排放情境下，世紀末期的未來氣候推估結果。</p>
           </div>
           <iframe
-            title="Rx1day Future 3D Map"
+            title="Rx1day 未來情境 3D 地圖"
             src="./output/rx1day_ssp585_3d.html"
             loading="lazy"
           ></iframe>
@@ -182,12 +182,12 @@
 
         <article class="card">
           <div class="card-header">
-            <span class="eyebrow">Change</span>
-            <h2>Future Minus Baseline</h2>
-            <p>Diverging colors show increase or decrease relative to OBS.</p>
+            <span class="eyebrow">變化量</span>
+            <h2>未來減去基期</h2>
+            <p>以雙向色帶呈現相對於觀測基期的增加或減少。</p>
           </div>
           <iframe
-            title="Rx1day Change 3D Map"
+            title="Rx1day 變化量 3D 地圖"
             src="./output/rx1day_change_3d.html"
             loading="lazy"
           ></iframe>
@@ -195,9 +195,8 @@
       </section>
 
       <p class="footer">
-        For GitHub Pages, publish this folder so that <code>index.html</code>
-        sits at the site root and the exported maps stay in
-        <code>output/</code>.
+        部署到 GitHub Pages 時，請讓 <code>index.html</code> 位於網站根目錄，
+        並將輸出的地圖 HTML 保留在 <code>output/</code> 資料夾中。
       </p>
     </main>
   </body>
