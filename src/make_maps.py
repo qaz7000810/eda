@@ -105,12 +105,38 @@ def assign_color(value: float, breaks: np.ndarray, colors: list[list[int]]) -> l
     return colors[-1]
 
 
+def compute_shared_elevation_reference(
+    gdf: gpd.GeoDataFrame, value_columns: list[str]
+) -> tuple[float, float]:
+    combined = pd.concat([gdf[column] for column in value_columns], ignore_index=True).dropna()
+    if combined.empty:
+        raise ValueError("No valid values were found for 3D elevation scaling.")
+
+    min_value = float(combined.min())
+    max_value = float(combined.max())
+    if np.isclose(min_value, max_value):
+        max_value = min_value + 1.0
+    return min_value, max_value
+
+
+def compute_emphasized_elevation(
+    series: pd.Series,
+    elevation_reference: tuple[float, float],
+    exponent: float = 2.6,
+    max_height: float = 7000.0,
+) -> pd.Series:
+    min_value, max_value = elevation_reference
+    normalized = ((series - min_value) / (max_value - min_value)).clip(lower=0, upper=1)
+    return np.power(normalized, exponent) * max_height
+
+
 def prepare_map_frame(
     gdf: gpd.GeoDataFrame,
     value_column: str,
     title: str,
     subtitle: str,
     diverging: bool = False,
+    elevation_reference: tuple[float, float] | None = None,
 ) -> pd.DataFrame:
     map_df = gdf.dropna(subset=["LON", "LAT", value_column]).copy()
     colors = DIVERGING_COLORS if diverging else SEQUENTIAL_COLORS
@@ -119,7 +145,12 @@ def prepare_map_frame(
     map_df["fill_color"] = map_df[value_column].apply(
         lambda value: assign_color(value, breaks, colors)
     )
-    map_df["elevation"] = map_df[value_column]
+    if elevation_reference is None or diverging:
+        map_df["elevation"] = map_df[value_column]
+    else:
+        map_df["elevation"] = compute_emphasized_elevation(
+            map_df[value_column], elevation_reference
+        )
     map_df["title"] = title
     map_df["subtitle"] = subtitle
     map_df["value_text"] = map_df[value_column].map(lambda value: f"{value:,.2f}")
@@ -170,7 +201,7 @@ def build_2d_map(map_df: pd.DataFrame, radius: int = 3200) -> pdk.Deck:
 
 def build_3d_map(
     map_df: pd.DataFrame,
-    elevation_scale: float = 20.0,
+    elevation_scale: float = 1.0,
     radius: int = 3400,
 ) -> pdk.Deck:
     layer = pdk.Layer(
@@ -218,6 +249,9 @@ def export_map(deck: pdk.Deck, output_path: Path) -> None:
 
 def main() -> None:
     gdf = load_rx1day_data(RX1DAY_CSV)
+    shared_elevation_reference = compute_shared_elevation_reference(
+        gdf, [BASELINE_COL, FUTURE_COL]
+    )
 
     baseline_2d = prepare_map_frame(
         gdf,
@@ -230,6 +264,7 @@ def main() -> None:
         BASELINE_COL,
         title="Rx1day Baseline 3D",
         subtitle="OBS 1995-2014",
+        elevation_reference=shared_elevation_reference,
     )
     future_2d = prepare_map_frame(
         gdf,
@@ -242,6 +277,7 @@ def main() -> None:
         FUTURE_COL,
         title="Rx1day Future 3D",
         subtitle="SSP5-8.5 2081-2100",
+        elevation_reference=shared_elevation_reference,
     )
     change_2d = prepare_map_frame(
         gdf,

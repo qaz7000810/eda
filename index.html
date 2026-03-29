@@ -301,14 +301,27 @@
               <p class="card-kicker">Chart 7</p>
               <h3>Top Increase Summary</h3>
               <p>
-                依照 SSP5-8.5_2081-2100 相對基期的變化量排序，列出 Rx1day 增幅最高的前
-                10 個格點，方便快速對照地圖上的熱點位置。
+                依照 SSP5-8.5_2081-2100 相對基期的變化量排序，先列出 Rx1day 增幅最高的前
+                10 個格點，再把這些經緯度位置標到地圖上，方便把表格資訊和空間分布一起看。
               </p>
             </div>
             <iframe
               class="frame-short"
               title="Top Increase Summary"
               src="./output/charts/top_increase_table.html"
+              loading="lazy"
+            ></iframe>
+            <div class="media-copy media-copy-subsection">
+              <p class="card-kicker">Location Map</p>
+              <h3>Top Increase Map</h3>
+              <p>
+                地圖放在表格下面，直接標出前 10 名格點的位置，方便確認這些增幅熱點集中在哪些區域。
+              </p>
+            </div>
+            <iframe
+              class="frame-short"
+              title="Top Increase Map"
+              src="./output/charts/top_increase_map.html"
               loading="lazy"
             ></iframe>
           </article>

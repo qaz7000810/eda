@@ -446,7 +446,7 @@ def build_correlation_heatmap(target_column: str = FUTURE_COL) -> go.Figure:
     return apply_plotly_theme(fig, "變數相關矩陣 Heatmap", height=760)
 
 
-def build_top_increase_table_html(rx1day_df: pd.DataFrame, top_n: int = 10) -> str:
+def get_top_increase_dataframe(rx1day_df: pd.DataFrame, top_n: int = 10) -> pd.DataFrame:
     top_df = (
         rx1day_df[["LON", "LAT", BASELINE_COL, FUTURE_COL]]
         .dropna()
@@ -457,6 +457,110 @@ def build_top_increase_table_html(rx1day_df: pd.DataFrame, top_n: int = 10) -> s
     )
 
     top_df.insert(0, "rank", np.arange(1, len(top_df) + 1))
+    return top_df
+
+
+def build_top_increase_map(rx1day_df: pd.DataFrame, top_n: int = 10) -> go.Figure:
+    all_points_df = (
+        rx1day_df[["LON", "LAT", BASELINE_COL, FUTURE_COL]]
+        .dropna()
+        .assign(change=lambda df: df[FUTURE_COL] - df[BASELINE_COL])
+    )
+    top_df = get_top_increase_dataframe(rx1day_df, top_n=top_n)
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scattergeo(
+            lon=all_points_df["LON"],
+            lat=all_points_df["LAT"],
+            mode="markers",
+            marker={
+                "size": 4,
+                "color": "rgba(120, 150, 190, 0.28)",
+                "line": {"width": 0},
+            },
+            hoverinfo="skip",
+            name="全部有效格點",
+        )
+    )
+    fig.add_trace(
+        go.Scattergeo(
+            lon=top_df["LON"],
+            lat=top_df["LAT"],
+            mode="markers+text",
+            text=top_df["rank"].map(lambda value: f"#{value}"),
+            textposition="top center",
+            marker={
+                "size": top_df["change"] / top_df["change"].max() * 18 + 10,
+                "color": top_df["change"],
+                "colorscale": [
+                    [0.0, "#ffb74d"],
+                    [0.5, "#ff8a65"],
+                    [1.0, "#ef5350"],
+                ],
+                "line": {"color": "rgba(255,255,255,0.28)", "width": 1.2},
+                "colorbar": {"title": "Change"},
+                "opacity": 0.95,
+            },
+            customdata=np.column_stack(
+                [
+                    top_df["rank"],
+                    top_df[BASELINE_COL],
+                    top_df[FUTURE_COL],
+                    top_df["change"],
+                ]
+            ),
+            hovertemplate=(
+                "Rank: %{customdata[0]}<br>"
+                "LON: %{lon:.2f}<br>"
+                "LAT: %{lat:.2f}<br>"
+                "Baseline: %{customdata[1]:,.2f}<br>"
+                "Future: %{customdata[2]:,.2f}<br>"
+                "Change: %{customdata[3]:,.2f}<extra></extra>"
+            ),
+            name=f"Top {top_n}",
+        )
+    )
+
+    fig.update_geos(
+        resolution=50,
+        showcountries=False,
+        showcoastlines=True,
+        coastlinecolor="rgba(255,255,255,0.38)",
+        showland=True,
+        landcolor="#16304f",
+        showocean=True,
+        oceancolor="#081420",
+        showlakes=True,
+        lakecolor="#081420",
+        bgcolor="#0f1d33",
+        lonaxis={"range": [119.0, 122.4]},
+        lataxis={"range": [21.7, 25.5]},
+    )
+    fig.update_layout(
+        margin={"l": 24, "r": 24, "t": 78, "b": 32},
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.01, "x": 0},
+    )
+    fig.add_annotation(
+        x=0.01,
+        y=0.02,
+        xref="paper",
+        yref="paper",
+        xanchor="left",
+        yanchor="bottom",
+        text="灰點為全部有效格點，亮色標記為增幅最高前 10 名。",
+        showarrow=False,
+        font={"size": 12, "color": "#aab8cf"},
+        bgcolor="rgba(9,17,29,0.72)",
+        bordercolor="rgba(255,255,255,0.08)",
+        borderwidth=1,
+        borderpad=6,
+    )
+    return apply_plotly_theme(fig, "Top Increase Map", height=620)
+
+
+def build_top_increase_table_html(rx1day_df: pd.DataFrame, top_n: int = 10) -> str:
+    top_df = get_top_increase_dataframe(rx1day_df, top_n=top_n)
     top_df = top_df.rename(
         columns={
             "LON": "lon",
@@ -661,6 +765,7 @@ def main() -> None:
     write_chart(build_time_trend_chart(rx1day_df), "rx1day_time_trend.html")
     write_chart(build_change_percentage_chart(rx1day_df), "rx1day_change_percent.html")
     write_chart(build_correlation_heatmap(), "correlation_heatmap.html")
+    write_chart(build_top_increase_map(rx1day_df), "top_increase_map.html")
     write_html_document(
         build_top_increase_table_html(rx1day_df),
         "top_increase_table.html",

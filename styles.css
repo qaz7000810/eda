@@ -233,6 +233,11 @@ code {
   border-bottom: 1px solid rgba(124, 155, 199, 0.12);
 }
 
+.media-copy-subsection {
+  border-top: 1px solid rgba(124, 155, 199, 0.12);
+  background: linear-gradient(180deg, rgba(7, 14, 25, 0.94), rgba(12, 22, 38, 0.9));
+}
+
 .media-copy p {
   margin: 0;
 }
