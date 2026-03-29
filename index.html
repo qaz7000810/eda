@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AR6 臺灣氣候變遷 3D 地圖</title>
+    <title>AR6 臺灣氣候變遷 3D 地圖展示</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -14,16 +14,18 @@
           <h1>AR6 臺灣氣候變遷 3D 地圖展示</h1>
           <p class="hero-lead">
             本網站以 TCCIP AR6 氣候變遷關鍵指標資料為基礎，整合 Rx1day 與
-            TX90p 的空間視覺化與統計圖表，呈現觀測基期、未來高排放情境，以及
-            未來相對基期的變化。
+            TX90p 的空間視覺化與統計圖表，將原本的圖表展示進一步整理成研究展示頁。
+            除了地圖之外，也補上時間變化、情境比較、變數相關與增幅摘要，讓期中報告更像
+            一個完整的分析作品。
           </p>
         </div>
 
         <nav class="hero-nav" aria-label="頁面導覽">
           <a href="#overview">研究說明</a>
+          <a href="#workflow">研究流程</a>
           <a href="#maps">地圖展示</a>
           <a href="#charts">統計圖表</a>
-          <a href="#findings">初步結論</a>
+          <a href="#findings">初步發現</a>
           <a href="#next-steps">後續方向</a>
         </nav>
       </header>
@@ -34,9 +36,10 @@
             <p class="section-kicker">Overview</p>
             <h2>研究背景與資料來源</h2>
             <p>
-              研究聚焦於極端降雨與高溫指標在臺灣的空間分布差異，並以
-              SSP5-8.5_2081-2100 作為未來情境示範。資料使用 TCCIP AR6
-              氣候變遷關鍵指標 CSV，將無效值 -99.9 轉換為 NaN 後進行分析。
+              研究聚焦於臺灣極端降雨與高溫指標在不同情境與時段下的空間變化。資料來自
+              TCCIP AR6 氣候變遷關鍵指標 CSV，主要以 Rx1day 與 TX90p 為核心，並保留
+              PRCPTOT、SDII、CDD、CWD、HWDI 等指標的擴充空間。分析前先將
+              <code>-99.9</code> 視為無效值轉為 <code>NaN</code>，避免統計結果被錯誤拉低。
             </p>
           </div>
 
@@ -44,23 +47,67 @@
             <article class="info-card">
               <h3>研究問題</h3>
               <p>
-                臺灣各地在未來高排放情境下，極端降雨是否有顯著增加？暖晝天數與
-                極端降雨之間是否存在可觀察的關聯？
+                臺灣在未來氣候情境下，極端降雨是否有明顯升高？不同排放路徑下的差距會不會在
+                世紀中後期逐漸拉開？
               </p>
             </article>
             <article class="info-card">
               <h3>核心指標</h3>
               <p>
-                目前網站以年最大一日降雨量 Rx1day 與暖晝天數 TX90p 為主，後續可
-                延伸到 PRCPTOT、SDII、CDD、CWD 與 HWDI。
+                目前網站以年最大一日降雨量 Rx1day 與暖晝天數 TX90p 為主，並納入其他降雨與
+                熱相關指標做相關矩陣，讓圖表不只停留在單一變數。
               </p>
             </article>
             <article class="info-card">
-              <h3>視覺化方法</h3>
+              <h3>展示方式</h3>
               <p>
-                地圖採用 PyDeck 的 2D 與 3D 圖層，統計圖使用 Plotly 輸出成獨立
-                HTML，方便直接嵌入 GitHub Pages。
+                地圖採用 PyDeck 的 2D 與 3D 圖層，統計圖與摘要表則輸出為獨立 HTML，
+                可直接以相對路徑嵌入 GitHub Pages。
               </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="workflow" class="section-block">
+          <div class="section-heading">
+            <p class="section-kicker">Workflow</p>
+            <h2>研究流程 / Workflow</h2>
+            <p>
+              這份期中報告的處理流程從原始 AR6 指標資料出發，先完成清理與探索，再進入地圖、
+              統計圖表與後續模型延伸，讓網站內容可以和實際分析步驟對應。
+            </p>
+          </div>
+
+          <div class="workflow-grid">
+            <article class="workflow-step">
+              <p class="workflow-index">01</p>
+              <h3>AR6 Data</h3>
+              <p>整理 TCCIP AR6 指標 CSV，確認經緯度與情境欄位一致。</p>
+            </article>
+            <article class="workflow-step">
+              <p class="workflow-index">02</p>
+              <h3>Data Cleaning</h3>
+              <p>將 <code>-99.9</code> 轉為 NaN，保留有效格點做後續分析。</p>
+            </article>
+            <article class="workflow-step">
+              <p class="workflow-index">03</p>
+              <h3>EDA</h3>
+              <p>先看平均值、分布、情境差異與格點變化量，抓出分析重點。</p>
+            </article>
+            <article class="workflow-step">
+              <p class="workflow-index">04</p>
+              <h3>Maps</h3>
+              <p>用 2D 與 3D 地圖呈現基期、未來情境與變化量的空間分布。</p>
+            </article>
+            <article class="workflow-step">
+              <p class="workflow-index">05</p>
+              <h3>Statistical Charts</h3>
+              <p>補上時間變化、SSP 比較、相關熱圖與增幅摘要表。</p>
+            </article>
+            <article class="workflow-step">
+              <p class="workflow-index">06</p>
+              <h3>Future Modeling</h3>
+              <p>後續可延伸到區域聚合、回歸模型、風險圖與預測任務。</p>
             </article>
           </div>
         </section>
@@ -70,8 +117,8 @@
             <p class="section-kicker">Maps</p>
             <h2>地圖展示</h2>
             <p>
-              下列地圖依序呈現 Rx1day 的觀測基期、未來高排放情境，以及未來相對
-              基期的變化量。2D 地圖強調空間分布，3D 地圖強調數值高低與視覺對比。
+              下列地圖依序呈現 Rx1day 的觀測基期、未來高排放情境，以及未來相對基期的
+              變化量。2D 地圖主要看空間分布，3D 地圖則更容易看出高值格點的集中區。
             </p>
           </div>
 
@@ -80,9 +127,7 @@
               <div class="media-copy">
                 <p class="card-kicker">Map A1</p>
                 <h3>Baseline Rx1day 2D Map</h3>
-                <p>
-                  以 OBS 1995-2014 為基準，顯示全臺年最大一日降雨量的空間分布。
-                </p>
+                <p>以 OBS 1995-2014 為基準，顯示全臺年最大一日降雨量的空間分布。</p>
               </div>
               <iframe
                 title="Baseline Rx1day 2D Map"
@@ -95,9 +140,7 @@
               <div class="media-copy">
                 <p class="card-kicker">Map A2</p>
                 <h3>Baseline Rx1day 3D Map</h3>
-                <p>
-                  使用 3D 柱狀高度強化基期雨量差異，方便快速辨識高值熱區。
-                </p>
+                <p>使用 3D 柱狀高度強化基期雨量差異，方便快速辨識高值熱區。</p>
               </div>
               <iframe
                 title="Baseline Rx1day 3D Map"
@@ -110,9 +153,7 @@
               <div class="media-copy">
                 <p class="card-kicker">Map B1</p>
                 <h3>Future Rx1day 2D Map</h3>
-                <p>
-                  以 SSP5-8.5_2081-2100 示範世紀末高排放情境下的空間分布。
-                </p>
+                <p>以 SSP5-8.5_2081-2100 示範世紀末高排放情境下的空間分布。</p>
               </div>
               <iframe
                 title="Future Rx1day 2D Map"
@@ -125,9 +166,7 @@
               <div class="media-copy">
                 <p class="card-kicker">Map B2</p>
                 <h3>Future Rx1day 3D Map</h3>
-                <p>
-                  透過 3D 高度對比未來極端降雨的潛在增幅，呈現更強烈的視覺差異。
-                </p>
+                <p>透過 3D 高度對比未來極端降雨增幅，讓格點差異更直觀。</p>
               </div>
               <iframe
                 title="Future Rx1day 3D Map"
@@ -142,8 +181,8 @@
               <p class="card-kicker">Map C</p>
               <h3>Change Map</h3>
               <p>
-                顯示 SSP5-8.5_2081-2100 相對於 OBS 1995-2014 的變化量。冷暖雙向色帶
-                用於辨識相對增加與減少的區域。
+                顯示 SSP5-8.5_2081-2100 相對於 OBS 1995-2014 的變化量。冷暖雙向色帶可快速
+                區分增加與減少區域，適合搭配後續增幅摘要一起看。
               </p>
             </div>
             <iframe
@@ -159,8 +198,8 @@
             <p class="section-kicker">Charts</p>
             <h2>統計圖表</h2>
             <p>
-              除了地圖之外，網站也加入情境比較、分布比較與跨指標關聯圖，以補足空間
-              視覺化之外的統計視角。
+              除了原本的情境比較、boxplot 與散佈圖，這一版也加入時間變化圖、變化百分比、
+              correlation heatmap 與增幅最高格點摘要，讓網站更接近完整的研究展示頁。
             </p>
           </div>
 
@@ -169,9 +208,7 @@
               <div class="media-copy">
                 <p class="card-kicker">Chart 1</p>
                 <h3>SSP 比較圖</h3>
-                <p>
-                  比較四種長期情境在 2081-2100 的 Rx1day 全臺有效格點平均值。
-                </p>
+                <p>比較四種長期情境在 2081-2100 的 Rx1day 全臺有效格點平均值。</p>
               </div>
               <iframe
                 title="Rx1day SSP Compare"
@@ -184,9 +221,7 @@
               <div class="media-copy">
                 <p class="card-kicker">Chart 2</p>
                 <h3>Rx1day Boxplot</h3>
-                <p>
-                  以 boxplot 觀察四種情境下的全臺格點分布，補充平均值之外的離散程度。
-                </p>
+                <p>從分布角度比較各情境差異，補足平均值之外的離散程度與高值尾端。</p>
               </div>
               <iframe
                 title="Rx1day Boxplot"
@@ -194,20 +229,86 @@
                 loading="lazy"
               ></iframe>
             </article>
+
+            <article class="media-card">
+              <div class="media-copy">
+                <p class="card-kicker">Chart 3</p>
+                <h3>Rx1day 時間變化圖</h3>
+                <p>
+                  以全臺有效格點平均值比較 Baseline、Near、Mid、Far 四個時間階段，
+                  並同時放入 4 種 SSP 路徑。
+                </p>
+              </div>
+              <iframe
+                title="Rx1day Time Trend"
+                src="./output/charts/rx1day_time_trend.html"
+                loading="lazy"
+              ></iframe>
+            </article>
+
+            <article class="media-card">
+              <div class="media-copy">
+                <p class="card-kicker">Chart 4</p>
+                <h3>Change Percentage Chart</h3>
+                <p>
+                  比較各 SSP 在 2081-2100 相對於 OBS 1995-2014 的平均變化百分比，
+                  方便直接看出情境差距。
+                </p>
+              </div>
+              <iframe
+                title="Rx1day Change Percentage"
+                src="./output/charts/rx1day_change_percent.html"
+                loading="lazy"
+              ></iframe>
+            </article>
           </div>
 
           <article class="media-card media-card-wide">
             <div class="media-copy">
-              <p class="card-kicker">Chart 3</p>
+              <p class="card-kicker">Chart 5</p>
               <h3>TX90p vs Rx1day 散佈圖</h3>
               <p>
-                將 TX90p 與 Rx1day 的 SSP5-8.5_2081-2100 同格點資料配對，觀察暖晝天數
-                增加是否伴隨極端降雨變化，並加入趨勢線與相關係數。
+                將 TX90p 與 Rx1day 的 SSP5-8.5_2081-2100 同格點資料配對，觀察暖晝天數增加
+                是否伴隨極端降雨變化，並加入趨勢線與相關係數。
               </p>
             </div>
             <iframe
               title="TX90p vs Rx1day Scatter"
               src="./output/charts/tx90p_vs_rx1day.html"
+              loading="lazy"
+            ></iframe>
+          </article>
+
+          <article class="media-card media-card-wide">
+            <div class="media-copy">
+              <p class="card-kicker">Chart 6</p>
+              <h3>Correlation Heatmap</h3>
+              <p>
+                以 SSP5-8.5_2081-2100 的同格點資料建立變數相關矩陣，除了 Rx1day 與 TX90p，
+                也納入可直接讀取的降雨與熱相關指標。
+              </p>
+            </div>
+            <iframe
+              class="frame-tall"
+              title="Correlation Heatmap"
+              src="./output/charts/correlation_heatmap.html"
+              loading="lazy"
+            ></iframe>
+          </article>
+
+          <article class="media-card media-card-wide">
+            <div class="media-copy">
+              <p class="card-kicker">Chart 7</p>
+              <h3>Top Increase Summary</h3>
+              <p>
+                依照 SSP5-8.5_2081-2100 相對基期的變化量排序，列出 Rx1day 增幅最高的前
+                10 個格點，方便快速對照地圖上的熱點位置。
+              </p>
+            </div>
+            <iframe
+              class="frame-short"
+              title="Top Increase Summary"
+              src="./output/charts/top_increase_table.html"
               loading="lazy"
             ></iframe>
           </article>
@@ -218,31 +319,38 @@
             <p class="section-kicker">Findings</p>
             <h2>初步發現</h2>
             <p>
-              以下內容作為期中報告展示用的初步觀察，後續仍可配合更多指標與行政區尺度
-              聚合結果進一步深化。
+              以下內容是根據目前網站已完成的地圖與統計圖做出的初步觀察，重點是整理出值得在
+              期中報告口頭說明時延伸的幾個方向。
             </p>
           </div>
 
-          <div class="info-grid">
+          <div class="info-grid info-grid-four">
             <article class="info-card">
-              <h3>空間差異明顯</h3>
+              <h3>SSP5-8.5 的後期升幅最明顯</h3>
               <p>
-                從 2D 與 3D 地圖可快速辨識高值區與低值區，顯示極端降雨在不同地形與
-                區域條件下存在明顯差異。
+                從時間變化圖來看，Rx1day 在近未來平均值沒有立刻大幅上升，但到了世紀末
+                SSP5-8.5 已比基期高出約 27.8%，代表增幅主要集中在後段時期。
               </p>
             </article>
             <article class="info-card">
-              <h3>情境差異可比較</h3>
+              <h3>情境差距在長期更容易拉開</h3>
               <p>
-                SSP 比較圖與 boxplot 提供跨情境的整體分布視角，有助於理解未來不同排放
-                路徑下的平均值與變異程度。
+                2081-2100 的 SSP 比較顯示，SSP1-2.6 幾乎貼近基期，SSP2-4.5 與 SSP3-7.0
+                逐步上升，而 SSP5-8.5 明顯跳高，說明排放路徑的差異會反映在長期極端降雨上。
               </p>
             </article>
             <article class="info-card">
-              <h3>跨指標關係值得追蹤</h3>
+              <h3>增幅熱點不是平均分散</h3>
               <p>
-                TX90p 與 Rx1day 的散佈圖可作為高溫與極端降雨關聯的起點，後續可加入更多
-                時段與情境檢視穩定性。
+                Top Increase Summary 顯示最高增幅格點集中在南部與東部山區附近，前 10 名的
+                變化量大約落在 135 到 157 之間，空間上有明顯集中現象。
+              </p>
+            </article>
+            <article class="info-card">
+              <h3>高溫與降雨不一定同步放大</h3>
+              <p>
+                在 SSP5-8.5 同期格點下，TX90p 與 Rx1day 的線性相關不強，反而 Rx1day 與
+                PRCPTOT、CWD 的關聯更明顯，代表熱與雨的風險可能需要分開看。
               </p>
             </article>
           </div>
@@ -253,23 +361,27 @@
             <p class="section-kicker">Next Steps</p>
             <h2>後續研究方向</h2>
             <p>
-              下一階段可將更多指標與行政區層級分析納入展示，並補強模型不確定性與區域
-              差異的討論。
+              下一步會優先補齊比較維度與分析層次，讓網站從現階段的視覺化展示，進一步走向較完整的
+              研究分析與應用展示。
             </p>
           </div>
 
-          <div class="next-steps-list">
+          <div class="next-steps-list next-steps-grid-four">
             <article class="next-step">
-              <h3>擴充指標</h3>
-              <p>加入 PRCPTOT、SDII、CDD、CWD、HWDI 等指標，補足降雨與熱風險面向。</p>
+              <h3>擴充更多指標</h3>
+              <p>加入 PRCPTOT、SDII、CDD、CWD、HWDI 等指標，讓降雨與熱風險面向更完整。</p>
             </article>
             <article class="next-step">
-              <h3>加強比較維度</h3>
-              <p>比較不同時段與不同情境，並加入區域平均或行政區統計摘要。</p>
+              <h3>時段比較與區域聚合</h3>
+              <p>除了全臺平均，也想加入北中南東與行政區尺度的統計，補強區域差異的解讀。</p>
             </article>
             <article class="next-step">
-              <h3>深化報告敘事</h3>
-              <p>結合文獻回顧、政策意涵與方法限制，讓網站不只展示圖，也能支撐論述。</p>
+              <h3>Regression / Machine Learning</h3>
+              <p>嘗試用回歸或簡單機器學習模型，探索不同氣候指標之間的可預測關係。</p>
+            </article>
+            <article class="next-step">
+              <h3>Risk Map</h3>
+              <p>把高溫與降雨指標整合成風險地圖，讓結果更容易對接防災或環境議題的討論。</p>
             </article>
           </div>
         </section>

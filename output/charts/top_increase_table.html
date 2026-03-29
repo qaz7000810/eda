@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rx1day Top Increase Summary</title>
+    <style>
+      :root {
+        --bg: #09111d;
+        --panel: rgba(13, 22, 38, 0.94);
+        --panel-strong: rgba(8, 16, 28, 0.98);
+        --border: rgba(124, 155, 199, 0.18);
+        --text: #f3f6fb;
+        --soft: #aab8cf;
+        --accent: #ffb74d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 18px;
+        font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(54, 90, 140, 0.22), transparent 28%),
+          linear-gradient(180deg, var(--bg) 0%, #0c1829 100%);
+      }
+
+      .table-shell {
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      .table-head {
+        padding: 22px 24px 14px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(9, 16, 28, 0.98), rgba(13, 22, 38, 0.9));
+      }
+
+      .kicker {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: 24px;
+      }
+
+      p {
+        margin: 0;
+        color: var(--soft);
+        line-height: 1.7;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        padding: 18px 24px 0;
+      }
+
+      .summary-card {
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: rgba(10, 18, 32, 0.9);
+      }
+
+      .summary-card span {
+        display: block;
+        color: var(--soft);
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .summary-card strong {
+        font-size: 20px;
+      }
+
+      .table-wrap {
+        padding: 18px 24px 24px;
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 720px;
+      }
+
+      thead th {
+        padding: 12px 10px;
+        text-align: left;
+        color: var(--accent);
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      tbody td {
+        padding: 12px 10px;
+        border-bottom: 1px solid rgba(124, 155, 199, 0.1);
+        color: var(--text);
+      }
+
+      tbody tr:hover {
+        background: rgba(255, 183, 77, 0.06);
+      }
+
+      .table-note {
+        padding: 0 24px 24px;
+        color: var(--soft);
+        font-size: 13px;
+      }
+
+      @media (max-width: 900px) {
+        body {
+          padding: 12px;
+        }
+
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="table-shell">
+      <div class="table-head">
+        <p class="kicker">Top Increase Summary</p>
+        <h1>Rx1day 增幅最高格點</h1>
+        <p>依照 change = SSP5-8.5_2081-2100 - OBS_1995-2014 排序，列出全臺前 10 名有效格點。</p>
+      </div>
+      <div class="summary-grid"><div class="summary-card"><span>Top 1 Change</span><strong>157.44</strong></div><div class="summary-card"><span>Top 10 Mean</span><strong>142.20</strong></div><div class="summary-card"><span>Scenario</span><strong>SSP5-8.5 2081-2100</strong></div></div>
+      <div class="table-wrap"><table class="dataframe top-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>rank</th>
+      <th>lon</th>
+      <th>lat</th>
+      <th>baseline</th>
+      <th>future</th>
+      <th>change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>120.75</td>
+      <td>22.70</td>
+      <td>485.56</td>
+      <td>643.00</td>
+      <td>157.44</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>120.75</td>
+      <td>22.65</td>
+      <td>487.37</td>
+      <td>634.88</td>
+      <td>147.51</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>120.75</td>
+      <td>22.75</td>
+      <td>433.81</td>
+      <td>578.31</td>
+      <td>144.49</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>121.05</td>
+      <td>24.30</td>
+      <td>333.59</td>
+      <td>477.74</td>
+      <td>144.15</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>120.70</td>
+      <td>22.65</td>
+      <td>544.45</td>
+      <td>688.59</td>
+      <td>144.14</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>121.25</td>
+      <td>24.05</td>
+      <td>199.55</td>
+      <td>337.52</td>
+      <td>137.97</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>120.80</td>
+      <td>23.50</td>
+      <td>415.89</td>
+      <td>553.54</td>
+      <td>137.65</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>121.40</td>
+      <td>23.90</td>
+      <td>283.53</td>
+      <td>420.48</td>
+      <td>136.96</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>120.80</td>
+      <td>23.55</td>
+      <td>403.94</td>
+      <td>540.69</td>
+      <td>136.75</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>120.75</td>
+      <td>22.80</td>
+      <td>441.57</td>
+      <td>576.53</td>
+      <td>134.96</td>
+    </tr>
+  </tbody>
+</table></div>
+      <div class="table-note">欄位單位沿用原始指標資料；座標為格點中心經緯度。</div>
+    </div>
+  </body>
+</html>

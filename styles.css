@@ -147,7 +147,8 @@ code {
 
 .info-grid,
 .media-grid,
-.next-steps-list {
+.next-steps-list,
+.workflow-grid {
   display: grid;
   gap: 20px;
 }
@@ -156,13 +157,26 @@ code {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.info-grid-four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .media-grid-two {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.next-steps-grid-four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.workflow-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
 .info-card,
 .media-card,
-.next-step {
+.next-step,
+.workflow-step {
   border: 1px solid rgba(124, 155, 199, 0.14);
   border-radius: 24px;
   background: linear-gradient(180deg, rgba(9, 16, 28, 0.95), rgba(13, 22, 38, 0.9));
@@ -170,20 +184,39 @@ code {
 }
 
 .info-card,
-.next-step {
+.next-step,
+.workflow-step {
   padding: 22px;
 }
 
 .info-card h3,
 .media-copy h3,
-.next-step h3 {
+.next-step h3,
+.workflow-step h3 {
   margin: 0 0 10px;
   font-size: 1.22rem;
 }
 
 .info-card p,
-.next-step p {
+.next-step p,
+.workflow-step p {
   margin: 0;
+}
+
+.workflow-step {
+  position: relative;
+  min-height: 172px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 183, 77, 0.08), transparent 30%),
+    linear-gradient(180deg, rgba(9, 16, 28, 0.95), rgba(13, 22, 38, 0.9));
+}
+
+.workflow-index {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
 }
 
 .media-card {
@@ -212,6 +245,14 @@ iframe {
   background: #03060b;
 }
 
+.frame-short {
+  min-height: 470px;
+}
+
+.frame-tall {
+  min-height: 760px;
+}
+
 .page-footer {
   margin-top: 28px;
   padding: 20px 24px;
@@ -221,11 +262,25 @@ iframe {
   margin: 0;
 }
 
+@media (max-width: 1380px) {
+  .workflow-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .info-grid-four,
+  .next-steps-grid-four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 1100px) {
   .hero,
   .info-grid,
+  .info-grid-four,
   .media-grid-two,
-  .next-steps-list {
+  .next-steps-list,
+  .next-steps-grid-four,
+  .workflow-grid {
     grid-template-columns: 1fr;
   }
 }
