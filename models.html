@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>模型比較平台 | AR6 Rainfall Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="models">
+    <header class="topbar">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>AR6 Rainfall Lab</span>
+      </a>
+      <nav class="nav-links" aria-label="主要導覽">
+        <a href="./index.html">首頁</a>
+        <a href="./explore.html">地圖探索</a>
+        <a class="active" href="./models.html">模型平台</a>
+        <a href="./predictor.html">預測查詢</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-title reveal">
+        <p class="eyebrow">Model Platform</p>
+        <h1>模型比較與部署決策</h1>
+        <p>
+          研究展示保留 OLS、Random Forest、XGBoost 與 GWR/MGWR。
+          正式預測頁僅使用 XGBoost + PREDICTOR_SPATIAL_LAG，避免把 target spatial lag leakage 模型混入部署流程。
+        </p>
+      </section>
+
+      <section class="section model-summary reveal">
+        <div>
+          <p class="eyebrow">Deployed Model</p>
+          <h2 id="deployed-model-name">XGBoost + PREDICTOR_SPATIAL_LAG</h2>
+          <p>
+            在既有 4-fold spatial block CV 中，這是無 leakage 候選裡表現最佳的模型。
+            predictor spatial lag 只聚合輔助氣候變數，不使用目標變數鄰近值。
+          </p>
+        </div>
+        <div class="metric-strip">
+          <div>
+            <span>Training Target</span>
+            <strong>Rx1day change</strong>
+          </div>
+          <div>
+            <span>CV Strategy</span>
+            <strong>4-fold spatial block</strong>
+          </div>
+          <div>
+            <span>Deployment</span>
+            <strong>No browser training</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="section-head compact">
+          <p class="eyebrow">Comparison</p>
+          <h2>Spatial Block CV 結果</h2>
+        </div>
+        <div class="table-shell">
+          <table id="model-comparison-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Feature Set</th>
+                <th>Test R²</th>
+                <th>RMSE</th>
+                <th>MAE</th>
+                <th>Leakage</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="7">Loading model comparison...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="chart-shell" aria-label="Spatial block CV R2 chart">
+          <div id="cv-bars" class="bar-chart"></div>
+        </div>
+      </section>
+
+      <section class="section two-column reveal">
+        <div>
+          <div class="section-head compact">
+            <p class="eyebrow">Importance</p>
+            <h2>Feature Importance</h2>
+          </div>
+          <div id="feature-bars" class="rank-bars"></div>
+        </div>
+        <div class="explain-panel">
+          <p class="eyebrow">Leakage Policy</p>
+          <h2>Target spatial lag 只可展示</h2>
+          <p>
+            <code>TARGET_SPATIAL_LAG_RISKY</code> 類模型在比較表中保留，目的是呈現 leakage 會如何拉高驗證分數。
+            這類模型使用與預測目標高度接近的鄰近 target 訊息，不適合作為正式部署預測模型。
+          </p>
+          <p>
+            GWR / MGWR 則作為空間模型對照，用來補充空間異質性討論，不進入預測查詢頁的主流程。
+          </p>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="section-head compact">
+          <p class="eyebrow">Research Limits</p>
+          <h2>研究限制</h2>
+        </div>
+        <div class="feature-grid three">
+          <article class="feature-card">
+            <span class="card-index">L1</span>
+            <h3>資料尺度</h3>
+            <p>格點資料不是實測站逐日原始序列，無法代表所有局部觀測極值。</p>
+          </article>
+          <article class="feature-card">
+            <span class="card-index">L2</span>
+            <h3>解釋範圍</h3>
+            <p>目前預測是描述性風險估計，不做因果解釋或政策效果推論。</p>
+          </article>
+          <article class="feature-card">
+            <span class="card-index">L3</span>
+            <h3>區域聚合</h3>
+            <p>行政區摘要已使用縣市邊界預先聚合，但區域平均仍會平滑局部極值。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Model reports</span>
+      <span>Loaded from <code>output/models/</code>.</span>
+    </footer>
+  </body>
+</html>

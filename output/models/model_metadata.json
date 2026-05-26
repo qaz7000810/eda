@@ -1,0 +1,28 @@
+{
+  "deployed_model_name": "XGBoost + PREDICTOR_SPATIAL_LAG",
+  "feature_columns": [
+    "rx1day_base",
+    "tx90p_change",
+    "prcptot_change",
+    "sdii_change",
+    "cdd_change",
+    "cwd_change",
+    "hwdi_change",
+    "lon_scaled",
+    "lat_scaled",
+    "tx90p_change_lag",
+    "prcptot_change_lag",
+    "sdii_change_lag",
+    "cdd_change_lag",
+    "cwd_change_lag",
+    "hwdi_change_lag"
+  ],
+  "training_target": "Rx1day change = future Rx1day - OBS_1995-2014",
+  "cv_strategy": "4-fold spatial block CV by longitude quartile",
+  "evaluation_metrics": {
+    "in_sample_r2": 0.941632619674065,
+    "in_sample_rmse": 6.58804563759217,
+    "in_sample_mae": 5.0709770632727045
+  },
+  "leakage_policy": "TARGET_SPATIAL_LAG_RISKY is display-only and is not used for deployed predictions."
+}

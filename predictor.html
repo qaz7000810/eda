@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>預測查詢 | AR6 Rainfall Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="predictor">
+    <header class="topbar">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>AR6 Rainfall Lab</span>
+      </a>
+      <nav class="nav-links" aria-label="主要導覽">
+        <a href="./index.html">首頁</a>
+        <a href="./explore.html">地圖探索</a>
+        <a href="./models.html">模型平台</a>
+        <a class="active" href="./predictor.html">預測查詢</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-title compact-title reveal">
+        <p class="eyebrow">Predictor</p>
+        <h1>離線預測查詢</h1>
+        <p>
+          切換情境、時段與圖層後，點選格點查看 baseline、predicted change、predicted future 與風險等級；
+          也可選擇分區查看平均、最大與高風險占比。
+        </p>
+      </section>
+
+      <section class="predictor-layout reveal">
+        <div class="map-workspace">
+          <div class="map-toolbar" aria-label="預測圖層控制">
+            <label>
+              情境
+              <select id="scenario-select">
+                <option value="SSP1-2.6">SSP1-2.6</option>
+                <option value="SSP2-4.5">SSP2-4.5</option>
+                <option value="SSP3-7.0">SSP3-7.0</option>
+                <option value="SSP5-8.5" selected>SSP5-8.5</option>
+              </select>
+            </label>
+            <label>
+              時段
+              <select id="period-select">
+                <option value="2021-2040">2021-2040</option>
+                <option value="2041-2060">2041-2060</option>
+                <option value="2081-2100" selected>2081-2100</option>
+              </select>
+            </label>
+            <div class="segmented" role="group" aria-label="圖層切換">
+              <button class="active" type="button" data-layer="change">Predicted change</button>
+              <button type="button" data-layer="future">Predicted future</button>
+              <button type="button" data-layer="risk">Risk level</button>
+            </div>
+          </div>
+          <div class="canvas-panel">
+            <canvas id="prediction-map" width="960" height="760" aria-label="臺灣格點預測地圖"></canvas>
+            <div class="map-legend" id="map-legend"></div>
+          </div>
+        </div>
+
+        <aside class="query-panel">
+          <section class="control-panel">
+            <p class="eyebrow">Region</p>
+            <label for="region-select">行政區摘要</label>
+            <select id="region-select">
+              <option value="">載入中...</option>
+            </select>
+          </section>
+
+          <section class="result-panel" aria-live="polite">
+            <p class="eyebrow">Grid Query</p>
+            <h2 id="grid-title">點選地圖格點</h2>
+            <div class="result-grid" id="grid-result">
+              <div><span>Baseline</span><strong>-</strong></div>
+              <div><span>Change</span><strong>-</strong></div>
+              <div><span>Future</span><strong>-</strong></div>
+              <div><span>Risk</span><strong>-</strong></div>
+            </div>
+          </section>
+
+          <section class="result-panel">
+            <p class="eyebrow">Region Summary</p>
+            <h2 id="region-title">-</h2>
+            <div class="result-grid" id="region-result">
+              <div><span>Mean change</span><strong>-</strong></div>
+              <div><span>Mean future</span><strong>-</strong></div>
+              <div><span>Max change</span><strong>-</strong></div>
+              <div><span>High risk share</span><strong>-</strong></div>
+            </div>
+          </section>
+
+          <section class="model-note">
+            <p class="eyebrow">Model</p>
+            <h2>XGBoost + predictor spatial lag</h2>
+            <p>
+              前端資料來自 <code>grid_predictions.json</code> 與 <code>region_predictions.json</code>。
+              行政區摘要已用縣市邊界預先聚合；風險等級依同一情境時段下全臺 predicted change 分位數切為低、中、高。
+            </p>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Prediction data</span>
+      <span>Loaded from <code>output/predictions/</code>.</span>
+    </footer>
+  </body>
+</html>
