@@ -37,21 +37,21 @@
           <h2 id="deployed-model-name">XGBoost + PREDICTOR_SPATIAL_LAG</h2>
           <p>
             在既有 4-fold spatial block CV 中，這是無 leakage 候選裡表現最佳的模型。
-            predictor spatial lag 只聚合輔助氣候變數，不使用目標變數鄰近值。
+            predictor spatial lag 只聚合鄰近格點的輔助氣候指標，不使用目標變數鄰近值。
           </p>
         </div>
         <div class="metric-strip">
           <div>
-            <span>Training Target</span>
-            <strong>Rx1day change</strong>
+            <span>預測目標</span>
+            <strong>年最大一日降雨量變化量</strong>
           </div>
           <div>
-            <span>CV Strategy</span>
+            <span>驗證策略</span>
             <strong>4-fold spatial block</strong>
           </div>
           <div>
-            <span>Deployment</span>
-            <strong>No browser training</strong>
+            <span>部署方式</span>
+            <strong>瀏覽器不重新訓練</strong>
           </div>
         </div>
       </section>
@@ -65,17 +65,17 @@
           <table id="model-comparison-table">
             <thead>
               <tr>
-                <th>Model</th>
-                <th>Feature Set</th>
-                <th>Test R²</th>
+                <th>模型</th>
+                <th>特徵組合</th>
+                <th>測試集 R²</th>
                 <th>RMSE</th>
                 <th>MAE</th>
-                <th>Leakage</th>
-                <th>Note</th>
+                <th>資料洩漏</th>
+                <th>備註</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td colspan="7">Loading model comparison...</td></tr>
+              <tr><td colspan="7">正在載入模型比較結果...</td></tr>
             </tbody>
           </table>
         </div>
@@ -88,7 +88,7 @@
         <div>
           <div class="section-head compact">
             <p class="eyebrow">Importance</p>
-            <h2>Feature Importance</h2>
+            <h2>特徵重要性</h2>
           </div>
           <div id="feature-bars" class="rank-bars"></div>
         </div>
@@ -102,6 +102,24 @@
           <p>
             GWR / MGWR 則作為空間模型對照，用來補充空間異質性討論，不進入預測查詢頁的主流程。
           </p>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="section-head compact">
+          <p class="eyebrow">Variable Glossary</p>
+          <h2>氣候指標中文對照</h2>
+          <p>頁面保留原始代碼，方便對照 CSV 與模型欄位；中文名稱依 AR6 氣候變遷關鍵指標資料說明文件整理。<a class="text-link" href="./output/models/variable_glossary.csv" download>下載完整變數對照 CSV</a></p>
+        </div>
+        <div class="glossary-grid">
+          <article class="glossary-item"><code>Rx1day</code><strong>年最大一日降雨量</strong><span>毫米（mm）</span></article>
+          <article class="glossary-item"><code>TX90p</code><strong>暖晝天數</strong><span>天</span></article>
+          <article class="glossary-item"><code>PRCPTOT</code><strong>雨日總降雨量</strong><span>毫米（mm）</span></article>
+          <article class="glossary-item"><code>SDII</code><strong>雨日降雨強度</strong><span>毫米 / 天（總雨量 / 雨日）</span></article>
+          <article class="glossary-item"><code>CDD</code><strong>年最長連續不降雨日</strong><span>天</span></article>
+          <article class="glossary-item"><code>CWD</code><strong>年最長連續降雨日</strong><span>天</span></article>
+          <article class="glossary-item"><code>HWDI</code><strong>極端高溫持續指數</strong><span>天</span></article>
+          <article class="glossary-item"><code>LON / LAT</code><strong>經度 / 緯度</strong><span>格點空間位置</span></article>
         </div>
       </section>
 

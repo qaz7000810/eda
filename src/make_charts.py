@@ -27,10 +27,10 @@ BASELINE_COL = "OBS_1995-2014"
 FUTURE_COL = "SSP5-8.5_2081-2100"
 
 TIME_PERIOD_LABELS = [
-    ("Baseline<br>1995-2014", BASELINE_COL),
-    ("Near Future<br>2021-2040", "SSP5-8.5_2021-2040"),
-    ("Mid Future<br>2041-2060", "SSP5-8.5_2041-2060"),
-    ("Far Future<br>2081-2100", FUTURE_COL),
+    ("基準期<br>1995-2014", BASELINE_COL),
+    ("近未來<br>2021-2040", "SSP5-8.5_2021-2040"),
+    ("中未來<br>2041-2060", "SSP5-8.5_2041-2060"),
+    ("遠未來<br>2081-2100", FUTURE_COL),
 ]
 
 SCENARIO_COLUMNS = [
@@ -88,6 +88,16 @@ HEATMAP_COLORSCALE = [
     [0.75, "#f2a65a"],
     [1.0, "#d64b4b"],
 ]
+
+METRIC_LABELS = {
+    "RX1DAY": "年最大一日降雨量（Rx1day）",
+    "TX90P": "暖晝天數（TX90p）",
+    "PRCPTOT": "雨日總降雨量（PRCPTOT）",
+    "SDII": "雨日降雨強度（SDII）",
+    "CDD": "年最長連續不降雨日（CDD）",
+    "CWD": "年最長連續降雨日（CWD）",
+    "HWDI": "極端高溫持續指數（HWDI）",
+}
 
 
 def ensure_file_exists(csv_path: Path) -> None:
@@ -183,13 +193,13 @@ def build_ssp_compare_chart(rx1day_df: pd.DataFrame) -> go.Figure:
                 marker_color=[SCENARIO_COLORS[label] for label in labels],
                 text=[f"{value:,.2f}" for value in means],
                 textposition="outside",
-                hovertemplate="情境: %{x}<br>平均 Rx1day: %{y:,.2f}<extra></extra>",
+                hovertemplate="情境: %{x}<br>平均年最大一日降雨量: %{y:,.2f} mm<extra></extra>",
             )
         ]
     )
-    fig.update_yaxes(title_text="Rx1day 平均值")
+    fig.update_yaxes(title_text="年最大一日降雨量（Rx1day）平均值 / mm")
     fig.update_xaxes(title_text="長期情境")
-    return apply_plotly_theme(fig, "Rx1day 長期情境平均值比較")
+    return apply_plotly_theme(fig, "年最大一日降雨量（Rx1day）長期情境平均值比較")
 
 
 def build_boxplot_chart(rx1day_df: pd.DataFrame) -> go.Figure:
@@ -202,13 +212,13 @@ def build_boxplot_chart(rx1day_df: pd.DataFrame) -> go.Figure:
                 name=label,
                 marker_color=SCENARIO_COLORS[label],
                 boxmean=True,
-                hovertemplate=f"{label}<br>Rx1day: %{{y:,.2f}}<extra></extra>",
+                hovertemplate=f"{label}<br>年最大一日降雨量: %{{y:,.2f}} mm<extra></extra>",
             )
         )
 
-    fig.update_yaxes(title_text="Rx1day 分布")
+    fig.update_yaxes(title_text="年最大一日降雨量（Rx1day）分布 / mm")
     fig.update_xaxes(title_text="長期情境")
-    return apply_plotly_theme(fig, "Rx1day 長期情境分布 Boxplot")
+    return apply_plotly_theme(fig, "年最大一日降雨量（Rx1day）長期情境分布箱型圖")
 
 
 def build_scatter_chart(rx1day_df: pd.DataFrame, tx90p_df: pd.DataFrame) -> go.Figure:
@@ -245,10 +255,10 @@ def build_scatter_chart(rx1day_df: pd.DataFrame, tx90p_df: pd.DataFrame) -> go.F
             },
             customdata=scatter_df[["LON", "LAT"]].to_numpy(),
             hovertemplate=(
-                "TX90p: %{x:,.2f}<br>"
-                "Rx1day: %{y:,.2f}<br>"
-                "LON: %{customdata[0]:.2f}<br>"
-                "LAT: %{customdata[1]:.2f}<extra></extra>"
+                "暖晝天數（TX90p）: %{x:,.2f} 天<br>"
+                "年最大一日降雨量（Rx1day）: %{y:,.2f} mm<br>"
+                "經度: %{customdata[0]:.2f}<br>"
+                "緯度: %{customdata[1]:.2f}<extra></extra>"
             ),
             name="有效格點",
         )
@@ -259,7 +269,7 @@ def build_scatter_chart(rx1day_df: pd.DataFrame, tx90p_df: pd.DataFrame) -> go.F
             y=y_line,
             mode="lines",
             line={"color": "#4dd0e1", "width": 3},
-            hovertemplate="趨勢線<br>TX90p: %{x:,.2f}<br>Rx1day: %{y:,.2f}<extra></extra>",
+            hovertemplate="趨勢線<br>暖晝天數: %{x:,.2f} 天<br>年最大一日降雨量: %{y:,.2f} mm<extra></extra>",
             name="線性趨勢",
         )
     )
@@ -278,9 +288,9 @@ def build_scatter_chart(rx1day_df: pd.DataFrame, tx90p_df: pd.DataFrame) -> go.F
         font={"size": 13},
     )
 
-    fig.update_xaxes(title_text="TX90p (SSP5-8.5_2081-2100)")
-    fig.update_yaxes(title_text="Rx1day (SSP5-8.5_2081-2100)")
-    return apply_plotly_theme(fig, "TX90p 與 Rx1day 關聯散佈圖")
+    fig.update_xaxes(title_text="暖晝天數（TX90p）/ 天")
+    fig.update_yaxes(title_text="年最大一日降雨量（Rx1day）/ mm")
+    return apply_plotly_theme(fig, "暖晝天數（TX90p）與年最大一日降雨量（Rx1day）關聯散佈圖")
 
 
 def build_time_trend_chart(rx1day_df: pd.DataFrame) -> go.Figure:
@@ -305,7 +315,7 @@ def build_time_trend_chart(rx1day_df: pd.DataFrame) -> go.Figure:
                 hovertemplate=(
                     "情境: "
                     + scenario_label
-                    + "<br>時段: %{x}<br>全臺平均 Rx1day: %{y:,.2f}<extra></extra>"
+                    + "<br>時段: %{x}<br>全臺平均年最大一日降雨量: %{y:,.2f} mm<extra></extra>"
                 ),
             )
         )
@@ -315,14 +325,14 @@ def build_time_trend_chart(rx1day_df: pd.DataFrame) -> go.Figure:
         y=1.11,
         xref="paper",
         yref="paper",
-        text="Baseline 為共同觀測基期；其餘三點為各 SSP 時段平均值",
+        text="基準期為共同觀測期；其餘三點為各 SSP 時段平均值",
         showarrow=False,
         font={"size": 12, "color": "#aab8cf"},
     )
 
     fig.update_xaxes(title_text="時間階段")
-    fig.update_yaxes(title_text="Rx1day 全臺有效格點平均值")
-    return apply_plotly_theme(fig, "Rx1day 時間變化圖", height=640)
+    fig.update_yaxes(title_text="年最大一日降雨量（Rx1day）全臺有效格點平均值 / mm")
+    return apply_plotly_theme(fig, "年最大一日降雨量（Rx1day）時間變化圖", height=640)
 
 
 def calculate_change_percentages(rx1day_df: pd.DataFrame) -> list[tuple[str, float]]:
@@ -359,7 +369,7 @@ def build_change_percentage_chart(rx1day_df: pd.DataFrame) -> go.Figure:
     fig.add_hline(line_dash="dash", line_color="rgba(255,255,255,0.28)", y=0)
     fig.update_xaxes(title_text="2081-2100 長期情境")
     fig.update_yaxes(title_text="相對 OBS 1995-2014 的變化百分比 (%)")
-    return apply_plotly_theme(fig, "Rx1day 長期情境變化百分比", height=620)
+    return apply_plotly_theme(fig, "年最大一日降雨量（Rx1day）長期情境變化百分比", height=620)
 
 
 def load_metric_frames(target_column: str) -> tuple[dict[str, pd.DataFrame], list[str]]:
@@ -402,7 +412,7 @@ def build_correlation_heatmap(target_column: str = FUTURE_COL) -> go.Figure:
     correlation_source = merged_df.dropna().drop(columns=["LON", "LAT"])
     correlation_df = correlation_source.corr().round(3)
 
-    labels = correlation_df.columns.tolist()
+    labels = [METRIC_LABELS.get(column, column) for column in correlation_df.columns]
     values = correlation_df.to_numpy()
     text = np.vectorize(lambda value: f"{value:.2f}")(values)
 
@@ -499,7 +509,7 @@ def build_top_increase_map(rx1day_df: pd.DataFrame, top_n: int = 10) -> go.Figur
                     [1.0, "#ef5350"],
                 ],
                 "line": {"color": "rgba(255,255,255,0.28)", "width": 1.2},
-                "colorbar": {"title": "Change"},
+                "colorbar": {"title": "變化量"},
                 "opacity": 0.95,
             },
             customdata=np.column_stack(
@@ -511,14 +521,14 @@ def build_top_increase_map(rx1day_df: pd.DataFrame, top_n: int = 10) -> go.Figur
                 ]
             ),
             hovertemplate=(
-                "Rank: %{customdata[0]}<br>"
-                "LON: %{lon:.2f}<br>"
-                "LAT: %{lat:.2f}<br>"
-                "Baseline: %{customdata[1]:,.2f}<br>"
-                "Future: %{customdata[2]:,.2f}<br>"
-                "Change: %{customdata[3]:,.2f}<extra></extra>"
+                "排名: %{customdata[0]}<br>"
+                "經度: %{lon:.2f}<br>"
+                "緯度: %{lat:.2f}<br>"
+                "基準期 Rx1day: %{customdata[1]:,.2f} mm<br>"
+                "未來 Rx1day: %{customdata[2]:,.2f} mm<br>"
+                "變化量: %{customdata[3]:,.2f} mm<extra></extra>"
             ),
-            name=f"Top {top_n}",
+            name=f"增幅前 {top_n} 名",
         )
     )
 
@@ -556,7 +566,7 @@ def build_top_increase_map(rx1day_df: pd.DataFrame, top_n: int = 10) -> go.Figur
         borderwidth=1,
         borderpad=6,
     )
-    return apply_plotly_theme(fig, "Top Increase Map", height=620)
+    return apply_plotly_theme(fig, "年最大一日降雨量增幅最高格點地圖", height=620)
 
 
 def build_top_increase_table_html(rx1day_df: pd.DataFrame, top_n: int = 10) -> str:
@@ -573,13 +583,23 @@ def build_top_increase_table_html(rx1day_df: pd.DataFrame, top_n: int = 10) -> s
     formatted_df = top_df.copy()
     for column in ["lon", "lat", "baseline", "future", "change"]:
         formatted_df[column] = formatted_df[column].map(lambda value: f"{value:,.2f}")
+    formatted_df = formatted_df.rename(
+        columns={
+            "rank": "排名",
+            "lon": "經度",
+            "lat": "緯度",
+            "baseline": "基準期 Rx1day",
+            "future": "未來 Rx1day",
+            "change": "變化量",
+        }
+    )
 
     max_change = top_df["change"].max()
     mean_change = top_df["change"].mean()
     summary_cards = [
-        ("Top 1 Change", f"{max_change:,.2f}"),
-        ("Top 10 Mean", f"{mean_change:,.2f}"),
-        ("Scenario", "SSP5-8.5 2081-2100"),
+        ("最高變化量", f"{max_change:,.2f}"),
+        ("前 10 名平均", f"{mean_change:,.2f}"),
+        ("情境", "SSP5-8.5 2081-2100"),
     ]
 
     summary_html = "".join(
@@ -598,7 +618,7 @@ def build_top_increase_table_html(rx1day_df: pd.DataFrame, top_n: int = 10) -> s
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rx1day Top Increase Summary</title>
+    <title>年最大一日降雨量增幅摘要</title>
     <style>
       :root {{
         --bg: #09111d;
@@ -734,9 +754,9 @@ def build_top_increase_table_html(rx1day_df: pd.DataFrame, top_n: int = 10) -> s
   <body>
     <div class="table-shell">
       <div class="table-head">
-        <p class="kicker">Top Increase Summary</p>
-        <h1>Rx1day 增幅最高格點</h1>
-        <p>依照 change = SSP5-8.5_2081-2100 - OBS_1995-2014 排序，列出全臺前 {top_n} 名有效格點。</p>
+        <p class="kicker">增幅摘要</p>
+        <h1>年最大一日降雨量（Rx1day）增幅最高格點</h1>
+        <p>依照變化量 = SSP5-8.5_2081-2100 - OBS_1995-2014 排序，列出全臺前 {top_n} 名有效格點。</p>
       </div>
       <div class="summary-grid">{summary_html}</div>
       <div class="table-wrap">{table_html}</div>

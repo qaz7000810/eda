@@ -1,5 +1,27 @@
 (function () {
   const page = document.body.dataset.page;
+  const featureLabels = {
+    rx1day_base: "基準期年最大一日降雨量（Rx1day baseline）",
+    tx90p_change: "暖晝天數變化量（TX90p change）",
+    prcptot_change: "雨日總降雨量變化量（PRCPTOT change）",
+    sdii_change: "雨日降雨強度變化量（SDII change）",
+    cdd_change: "年最長連續不降雨日變化量（CDD change）",
+    cwd_change: "年最長連續降雨日變化量（CWD change）",
+    hwdi_change: "極端高溫持續指數變化量（HWDI change）",
+    lon_scaled: "標準化經度（longitude）",
+    lat_scaled: "標準化緯度（latitude）",
+    tx90p_change_lag: "鄰近格點暖晝天數變化量（TX90p spatial lag）",
+    prcptot_change_lag: "鄰近格點雨日總降雨量變化量（PRCPTOT spatial lag）",
+    sdii_change_lag: "鄰近格點雨日降雨強度變化量（SDII spatial lag）",
+    cdd_change_lag: "鄰近格點連續不降雨日變化量（CDD spatial lag）",
+    cwd_change_lag: "鄰近格點連續降雨日變化量（CWD spatial lag）",
+    hwdi_change_lag: "鄰近格點極端高溫持續指數變化量（HWDI spatial lag）",
+  };
+  const featureSetLabels = {
+    NO_SPATIAL: "不含空間鄰近特徵",
+    PREDICTOR_SPATIAL_LAG: "加入輔助指標鄰近特徵",
+    TARGET_SPATIAL_LAG_RISKY: "加入目標值鄰近特徵（洩漏風險）",
+  };
 
   initReveal();
   initHeroCanvas();
@@ -123,7 +145,7 @@
         const risky = String(row.Possible_leakage).toLowerCase() === "true";
         return `<tr data-risk="${risky}">
           <td>${escapeHtml(row.Model)}</td>
-          <td>${escapeHtml(row.FeatureSet)}</td>
+          <td>${escapeHtml(featureSetLabels[row.FeatureSet] || row.FeatureSet)}</td>
           <td>${formatNumber(row.Test_R2, 3)}</td>
           <td>${formatNumber(row.RMSE, 2)}</td>
           <td>${formatNumber(row.MAE, 2)}</td>
@@ -142,7 +164,7 @@
       .map((row) => {
         const value = Number(row.Test_R2) || 0;
         const risky = String(row.Possible_leakage).toLowerCase() === "true";
-        const label = `${row.Model} / ${row.FeatureSet}`;
+        const label = `${row.Model} / ${featureSetLabels[row.FeatureSet] || row.FeatureSet}`;
         return `<div class="bar-row ${risky ? "risky" : ""}">
           <span>${escapeHtml(label)}</span>
           <div class="bar-track"><div class="bar-fill" style="--bar-width: ${(value / maxR2) * 100}%"></div></div>
@@ -161,7 +183,7 @@
       .map((row) => {
         const value = Number(row.Importance) || 0;
         return `<div class="bar-row">
-          <span>${escapeHtml(row.Feature)}</span>
+          <span>${escapeHtml(featureLabels[row.Feature] || row.Feature)}</span>
           <div class="bar-track"><div class="bar-fill" style="--bar-width: ${(value / maxValue) * 100}%"></div></div>
           <strong>${formatNumber(value, 3)}</strong>
         </div>`;
@@ -262,10 +284,10 @@
       if (!row) return;
       document.getElementById("region-title").textContent = row.region_name;
       document.getElementById("region-result").innerHTML = `
-        <div><span>Mean change</span><strong>${formatNumber(row.mean_change_pred, 2)} mm</strong></div>
-        <div><span>Mean future</span><strong>${formatNumber(row.mean_future_pred, 2)} mm</strong></div>
-        <div><span>Max change</span><strong>${formatNumber(row.max_change_pred, 2)} mm</strong></div>
-        <div><span>High risk share</span><strong>${formatPercent(row.high_risk_share)}</strong></div>
+        <div><span>平均變化量</span><strong>${formatNumber(row.mean_change_pred, 2)} mm</strong></div>
+        <div><span>平均未來值</span><strong>${formatNumber(row.mean_future_pred, 2)} mm</strong></div>
+        <div><span>最大變化量</span><strong>${formatNumber(row.max_change_pred, 2)} mm</strong></div>
+        <div><span>高風險占比</span><strong>${formatPercent(row.high_risk_share)}</strong></div>
       `;
     }
 
@@ -355,10 +377,10 @@
     document.getElementById("grid-title").textContent = `${row.lon.toFixed(2)}, ${row.lat.toFixed(2)}`;
     const riskClass = row.risk_level === "高" ? "risk-high" : row.risk_level === "中" ? "risk-mid" : "risk-low";
     document.getElementById("grid-result").innerHTML = `
-      <div><span>Baseline</span><strong>${formatNumber(row.rx1day_base, 2)} mm</strong></div>
-      <div><span>Change</span><strong>${formatSigned(row.rx1day_change_pred, 2)} mm</strong></div>
-      <div><span>Future</span><strong>${formatNumber(row.rx1day_future_pred, 2)} mm</strong></div>
-      <div><span>Risk</span><strong class="${riskClass}">${row.risk_level} / P${formatNumber(row.risk_percentile, 0)}</strong></div>
+      <div><span>基準期 Rx1day</span><strong>${formatNumber(row.rx1day_base, 2)} mm</strong></div>
+      <div><span>預測變化量</span><strong>${formatSigned(row.rx1day_change_pred, 2)} mm</strong></div>
+      <div><span>未來預測值</span><strong>${formatNumber(row.rx1day_future_pred, 2)} mm</strong></div>
+      <div><span>風險等級</span><strong class="${riskClass}">${row.risk_level} / P${formatNumber(row.risk_percentile, 0)}</strong></div>
     `;
   }
 

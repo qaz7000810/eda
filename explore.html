@@ -27,56 +27,56 @@
         <h1>地圖與統計圖探索</h1>
         <p>
           延續期中網站已輸出的 PyDeck 與 Plotly HTML，以 iframe 嵌入靜態頁面。
-          此頁聚焦於 OBS baseline、SSP5-8.5 遠未來與 change 的空間分布，以及主要統計圖。
+          此頁聚焦於 OBS 基準期、SSP5-8.5 遠未來與變化量的空間分布，以及主要統計圖。
         </p>
       </section>
 
       <section class="section reveal">
         <div class="section-head compact">
           <p class="eyebrow">Maps</p>
-          <h2>Rx1day 空間分布</h2>
+          <h2>年最大一日降雨量（Rx1day）空間分布</h2>
         </div>
         <div class="media-grid two">
           <article class="media-panel">
             <div class="media-copy">
               <span>Map A1</span>
-              <h3>Baseline Rx1day 2D</h3>
+              <h3>基準期年最大一日降雨量 2D</h3>
               <p>OBS 1995-2014 的格點極端單日降雨基準值。</p>
             </div>
-            <iframe title="Baseline Rx1day 2D Map" src="./output/maps/rx1day_baseline_2d.html" loading="lazy"></iframe>
+            <iframe title="基準期年最大一日降雨量 2D 地圖" src="./output/maps/rx1day_baseline_2d.html" loading="lazy"></iframe>
           </article>
           <article class="media-panel">
             <div class="media-copy">
               <span>Map A2</span>
-              <h3>Baseline Rx1day 3D</h3>
+              <h3>基準期年最大一日降雨量 3D</h3>
               <p>以 3D column 強化空間高值區辨識。</p>
             </div>
-            <iframe title="Baseline Rx1day 3D Map" src="./output/maps/rx1day_baseline_3d.html" loading="lazy"></iframe>
+            <iframe title="基準期年最大一日降雨量 3D 地圖" src="./output/maps/rx1day_baseline_3d.html" loading="lazy"></iframe>
           </article>
           <article class="media-panel">
             <div class="media-copy">
               <span>Map B1</span>
-              <h3>Future Rx1day 2D</h3>
+              <h3>未來年最大一日降雨量 2D</h3>
               <p>SSP5-8.5 2081-2100 的未來預估分布。</p>
             </div>
-            <iframe title="Future Rx1day 2D Map" src="./output/maps/rx1day_future_2d.html" loading="lazy"></iframe>
+            <iframe title="未來年最大一日降雨量 2D 地圖" src="./output/maps/rx1day_future_2d.html" loading="lazy"></iframe>
           </article>
           <article class="media-panel">
             <div class="media-copy">
               <span>Map B2</span>
-              <h3>Future Rx1day 3D</h3>
+              <h3>未來年最大一日降雨量 3D</h3>
               <p>以高度呈現未來極端降雨高值格點。</p>
             </div>
-            <iframe title="Future Rx1day 3D Map" src="./output/maps/rx1day_future_3d.html" loading="lazy"></iframe>
+            <iframe title="未來年最大一日降雨量 3D 地圖" src="./output/maps/rx1day_future_3d.html" loading="lazy"></iframe>
           </article>
         </div>
         <article class="media-panel wide">
           <div class="media-copy">
             <span>Map C</span>
-            <h3>Rx1day Change</h3>
+            <h3>年最大一日降雨量變化量</h3>
             <p>SSP5-8.5 2081-2100 減去 OBS 1995-2014 的變化量。</p>
           </div>
-          <iframe title="Rx1day Change Map" src="./output/maps/rx1day_change.html" loading="lazy"></iframe>
+          <iframe title="年最大一日降雨量變化量地圖" src="./output/maps/rx1day_change.html" loading="lazy"></iframe>
         </article>
       </section>
 
@@ -89,15 +89,15 @@
           <article class="media-panel">
             <div class="media-copy">
               <span>Chart 1</span>
-              <h3>SSP Compare</h3>
-              <p>比較 2081-2100 各情境的平均 Rx1day。</p>
+              <h3>SSP 情境比較</h3>
+              <p>比較 2081-2100 各情境的平均年最大一日降雨量（Rx1day）。</p>
             </div>
             <iframe title="Rx1day SSP Compare" src="./output/charts/rx1day_ssp_compare.html" loading="lazy"></iframe>
           </article>
           <article class="media-panel">
             <div class="media-copy">
               <span>Chart 2</span>
-              <h3>Rx1day Boxplot</h3>
+              <h3>年最大一日降雨量箱型圖</h3>
               <p>檢查不同 SSP 情境下的分布與離散程度。</p>
             </div>
             <iframe title="Rx1day Boxplot" src="./output/charts/rx1day_boxplot.html" loading="lazy"></iframe>
@@ -105,16 +105,16 @@
           <article class="media-panel">
             <div class="media-copy">
               <span>Chart 3</span>
-              <h3>Time Trend</h3>
-              <p>追蹤 baseline、近未來、中未來與遠未來的平均變化。</p>
+              <h3>時間趨勢</h3>
+              <p>追蹤基準期、近未來、中未來與遠未來的平均變化。</p>
             </div>
             <iframe title="Rx1day Time Trend" src="./output/charts/rx1day_time_trend.html" loading="lazy"></iframe>
           </article>
           <article class="media-panel">
             <div class="media-copy">
               <span>Chart 4</span>
-              <h3>Change Percent</h3>
-              <p>以百分比呈現遠未來相對 baseline 的平均增減。</p>
+              <h3>變化百分比</h3>
+              <p>以百分比呈現遠未來相對基準期的平均增減。</p>
             </div>
             <iframe title="Rx1day Change Percentage" src="./output/charts/rx1day_change_percent.html" loading="lazy"></iframe>
           </article>
@@ -122,16 +122,16 @@
         <article class="media-panel wide">
           <div class="media-copy">
             <span>Chart 5</span>
-            <h3>TX90p vs Rx1day</h3>
-            <p>檢查高溫日變化與極端降雨之間的共同變動。</p>
+            <h3>暖晝天數（TX90p）與年最大一日降雨量（Rx1day）</h3>
+            <p>檢查暖晝天數與極端降雨之間的共同變動。</p>
           </div>
           <iframe title="TX90p vs Rx1day Scatter" src="./output/charts/tx90p_vs_rx1day.html" loading="lazy"></iframe>
         </article>
         <article class="media-panel wide">
           <div class="media-copy">
             <span>Chart 6</span>
-            <h3>Correlation Heatmap</h3>
-            <p>同時檢查 Rx1day 與輔助氣候指標的相關結構。</p>
+            <h3>相關矩陣熱圖</h3>
+            <p>同時檢查年最大一日降雨量（Rx1day）與輔助氣候指標的相關結構。</p>
           </div>
           <iframe class="frame-tall" title="Correlation Heatmap" src="./output/charts/correlation_heatmap.html" loading="lazy"></iframe>
         </article>

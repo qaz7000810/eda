@@ -256,34 +256,34 @@ def main() -> None:
     baseline_2d = prepare_map_frame(
         gdf,
         BASELINE_COL,
-        title="Rx1day Baseline 2D",
-        subtitle="OBS 1995-2014",
+        title="基準期年最大一日降雨量（Rx1day）",
+        subtitle="OBS 1995-2014 | 單位：毫米（mm）",
     )
     baseline_3d = prepare_map_frame(
         gdf,
         BASELINE_COL,
-        title="Rx1day Baseline 3D",
-        subtitle="OBS 1995-2014",
+        title="基準期年最大一日降雨量（Rx1day）",
+        subtitle="OBS 1995-2014 | 單位：毫米（mm）",
         elevation_reference=shared_elevation_reference,
     )
     future_2d = prepare_map_frame(
         gdf,
         FUTURE_COL,
-        title="Rx1day Future 2D",
-        subtitle="SSP5-8.5 2081-2100",
+        title="未來年最大一日降雨量（Rx1day）",
+        subtitle="SSP5-8.5 2081-2100 | 單位：毫米（mm）",
     )
     future_3d = prepare_map_frame(
         gdf,
         FUTURE_COL,
-        title="Rx1day Future 3D",
-        subtitle="SSP5-8.5 2081-2100",
+        title="未來年最大一日降雨量（Rx1day）",
+        subtitle="SSP5-8.5 2081-2100 | 單位：毫米（mm）",
         elevation_reference=shared_elevation_reference,
     )
     change_2d = prepare_map_frame(
         gdf,
         CHANGE_COL,
-        title="Rx1day Change",
-        subtitle="SSP5-8.5 2081-2100 minus OBS 1995-2014",
+        title="年最大一日降雨量變化量（Rx1day change）",
+        subtitle="SSP5-8.5 2081-2100 減去 OBS 1995-2014 | 單位：毫米（mm）",
         diverging=True,
     )
 

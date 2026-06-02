@@ -26,7 +26,7 @@
         <p class="eyebrow">Predictor</p>
         <h1>離線預測查詢</h1>
         <p>
-          切換情境、時段與圖層後，點選格點查看 baseline、predicted change、predicted future 與風險等級；
+          切換情境、時段與圖層後，點選格點查看基準期、預測變化量、未來預測值與風險等級；
           也可選擇分區查看平均、最大與高風險占比。
         </p>
       </section>
@@ -52,9 +52,9 @@
               </select>
             </label>
             <div class="segmented" role="group" aria-label="圖層切換">
-              <button class="active" type="button" data-layer="change">Predicted change</button>
-              <button type="button" data-layer="future">Predicted future</button>
-              <button type="button" data-layer="risk">Risk level</button>
+              <button class="active" type="button" data-layer="change">預測變化量</button>
+              <button type="button" data-layer="future">未來預測值</button>
+              <button type="button" data-layer="risk">風險等級</button>
             </div>
           </div>
           <div class="canvas-panel">
@@ -76,10 +76,10 @@
             <p class="eyebrow">Grid Query</p>
             <h2 id="grid-title">點選地圖格點</h2>
             <div class="result-grid" id="grid-result">
-              <div><span>Baseline</span><strong>-</strong></div>
-              <div><span>Change</span><strong>-</strong></div>
-              <div><span>Future</span><strong>-</strong></div>
-              <div><span>Risk</span><strong>-</strong></div>
+              <div><span>基準期 Rx1day</span><strong>-</strong></div>
+              <div><span>預測變化量</span><strong>-</strong></div>
+              <div><span>未來預測值</span><strong>-</strong></div>
+              <div><span>風險等級</span><strong>-</strong></div>
             </div>
           </section>
 
@@ -87,10 +87,10 @@
             <p class="eyebrow">Region Summary</p>
             <h2 id="region-title">-</h2>
             <div class="result-grid" id="region-result">
-              <div><span>Mean change</span><strong>-</strong></div>
-              <div><span>Mean future</span><strong>-</strong></div>
-              <div><span>Max change</span><strong>-</strong></div>
-              <div><span>High risk share</span><strong>-</strong></div>
+              <div><span>平均變化量</span><strong>-</strong></div>
+              <div><span>平均未來值</span><strong>-</strong></div>
+              <div><span>最大變化量</span><strong>-</strong></div>
+              <div><span>高風險占比</span><strong>-</strong></div>
             </div>
           </section>
 
@@ -99,7 +99,7 @@
             <h2>XGBoost + predictor spatial lag</h2>
             <p>
               前端資料來自 <code>grid_predictions.json</code> 與 <code>region_predictions.json</code>。
-              行政區摘要已用縣市邊界預先聚合；風險等級依同一情境時段下全臺 predicted change 分位數切為低、中、高。
+              行政區摘要已用縣市邊界預先聚合；風險等級依同一情境時段下全臺預測變化量分位數切為低、中、高。
             </p>
           </section>
         </aside>

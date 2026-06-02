@@ -67,6 +67,13 @@ code {
   font-weight: 650;
 }
 
+.text-link {
+  color: #08727a;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .topbar {
   position: sticky;
   top: 0;
@@ -338,7 +345,8 @@ p {
 .feature-grid,
 .media-grid,
 .timeline,
-.result-grid {
+.result-grid,
+.glossary-grid {
   display: grid;
   gap: 16px;
 }
@@ -350,6 +358,7 @@ p {
 
 .feature-card,
 .timeline article,
+.glossary-item,
 .explain-panel,
 .control-panel,
 .result-panel,
@@ -366,6 +375,7 @@ p {
 
 .feature-card,
 .timeline article,
+.glossary-item,
 .explain-panel,
 .control-panel,
 .result-panel,
@@ -376,6 +386,28 @@ p {
 .card-index {
   display: block;
   color: #b06c00;
+}
+
+.glossary-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.glossary-item {
+  display: grid;
+  gap: 6px;
+}
+
+.glossary-item code {
+  font-size: 0.82rem;
+}
+
+.glossary-item strong {
+  line-height: 1.35;
+}
+
+.glossary-item span {
+  color: var(--subtle);
+  font-size: 0.82rem;
 }
 
 .split-section {
@@ -758,6 +790,7 @@ select {
 
   .feature-grid,
   .feature-grid.three,
+  .glossary-grid,
   .media-grid.two,
   .timeline,
   .metric-strip,

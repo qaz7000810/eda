@@ -29,7 +29,7 @@
           <h1>AR6 極端降雨變化預測平台</h1>
           <p class="hero-lead">
             以 TCCIP AR6 格點指標建立靜態部署、前端互動、離線預測查詢的研究型 Web App。
-            主目標固定為 Rx1day change，也就是未來情境期與 OBS 1995-2014 的差值。
+            主目標固定為年最大一日降雨量變化量（Rx1day change），也就是未來情境期與 OBS 1995-2014 的差值。
           </p>
           <div class="hero-actions">
             <a class="button primary" href="./predictor.html">進入預測查詢</a>
@@ -65,12 +65,12 @@
           <article class="feature-card">
             <span class="card-index">01</span>
             <h3>主 target</h3>
-            <p><code>Rx1day change = future Rx1day - OBS_1995-2014</code>，所有情境與時段都採一致定義。</p>
+            <p><code>年最大一日降雨量變化量（Rx1day change） = 未來 Rx1day - OBS_1995-2014</code>，所有情境與時段都採一致定義。</p>
           </article>
           <article class="feature-card">
             <span class="card-index">02</span>
             <h3>輔助特徵</h3>
-            <p>整合 TX90p、PRCPTOT、SDII、CDD、CWD、HWDI 的 change 特徵與 predictor spatial lag。</p>
+            <p>整合暖晝天數（TX90p）、雨日總降雨量（PRCPTOT）、雨日降雨強度（SDII）、連續乾濕日與高溫持續指標的變化量。</p>
           </article>
           <article class="feature-card">
             <span class="card-index">03</span>
@@ -92,7 +92,7 @@
           <article>
             <span>Build</span>
             <h3>Modeling Table</h3>
-            <p>每列代表一個格點，並展開四情境三時段的 Rx1day 與輔助氣候 change 欄位。</p>
+            <p>每列代表一個格點，並展開四情境三時段的年最大一日降雨量（Rx1day）與輔助氣候指標變化量。</p>
           </article>
           <article>
             <span>Train</span>
