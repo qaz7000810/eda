@@ -14,6 +14,11 @@ OUTPUT_DIR = PROJECT_ROOT / "output"
 MODEL_OUTPUT_DIR = OUTPUT_DIR / "models"
 PREDICTION_OUTPUT_DIR = OUTPUT_DIR / "predictions"
 COUNTY_BOUNDARY_PATH = PROJECT_ROOT / "COUNTY_MOI_1140318.shp"
+TOWN_BOUNDARY_PATH = (
+    PROJECT_ROOT
+    / "鄉鎮市區界線(TWD97經緯度)"
+    / "TOWN_MOI_1120317.shp"
+)
 
 BASELINE_COL = "OBS_1995-2014"
 
@@ -73,6 +78,18 @@ COUNTY_NAME_BY_GEOMETRY_INDEX = {
     20: "苗栗縣",
     21: "新竹縣",
 }
+
+COUNTY_NAME_NORMALIZATION = {
+    "台北市": "臺北市",
+    "台中市": "臺中市",
+    "台南市": "臺南市",
+    "台東縣": "臺東縣",
+}
+
+
+def normalize_county_name(name: object) -> str:
+    normalized = str(name).strip()
+    return COUNTY_NAME_NORMALIZATION.get(normalized, normalized)
 
 
 def scenario_period_key(scenario: str, period: str) -> str:
@@ -194,13 +211,21 @@ def assign_region(lon: float, lat: float) -> tuple[str, str]:
 
 
 def load_county_boundaries():
-    if not COUNTY_BOUNDARY_PATH.exists():
-        return None
-
     os.environ.setdefault("SHAPE_RESTORE_SHX", "YES")
     try:
         import geopandas as gpd
     except ImportError:
+        return None
+
+    if TOWN_BOUNDARY_PATH.exists():
+        towns = gpd.read_file(TOWN_BOUNDARY_PATH, encoding="utf-8")
+        if not towns.empty and "COUNTYNAME" in towns.columns:
+            towns["region_name"] = towns["COUNTYNAME"].map(normalize_county_name)
+            counties = towns.dissolve(by="region_name", as_index=False)
+            counties["region_id"] = counties["region_name"]
+            return counties[["region_id", "region_name", "geometry"]]
+
+    if not COUNTY_BOUNDARY_PATH.exists():
         return None
 
     counties = gpd.read_file(COUNTY_BOUNDARY_PATH)
@@ -216,16 +241,14 @@ def load_county_boundaries():
         None,
     )
     if name_column:
-        counties["region_name"] = counties[name_column].astype(str)
+        counties["region_name"] = counties[name_column].map(normalize_county_name)
     else:
         counties["region_name"] = [
             COUNTY_NAME_BY_GEOMETRY_INDEX.get(index, f"縣市 {index + 1}")
             for index in range(len(counties))
         ]
 
-    counties["region_id"] = counties["region_name"].map(
-        lambda name: str(name).replace("臺", "台")
-    )
+    counties["region_id"] = counties["region_name"]
     return counties[["region_id", "region_name", "geometry"]]
 
 

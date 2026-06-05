@@ -24,10 +24,10 @@
     <main>
       <section class="page-title compact-title reveal">
         <p class="eyebrow">Predictor</p>
-        <h1>離線預測查詢</h1>
+        <h1>預測查詢與分析</h1>
         <p>
-          切換情境、時段與圖層後，點選格點查看基準期、預測變化量、未來預測值與風險等級；
-          也可選擇分區查看平均、最大與高風險占比。
+          這個頁面把模型結果翻成期末報告可以直接使用的問題：未來單日最大雨量可能增加多少、哪些氣候指標最能解釋變化、
+          哪些縣市同時面臨降雨增加與高溫變化，以及不同 SSP 下高風險縣市是否穩定。
         </p>
       </section>
 
@@ -52,57 +52,162 @@
               </select>
             </label>
             <div class="segmented" role="group" aria-label="圖層切換">
-              <button class="active" type="button" data-layer="change">預測變化量</button>
-              <button type="button" data-layer="future">未來預測值</button>
-              <button type="button" data-layer="risk">風險等級</button>
+              <button class="active" type="button" data-layer="change">雨量增加多少</button>
+              <button type="button" data-layer="future">未來單日最大雨量</button>
+              <button type="button" data-layer="risk">相對風險排序</button>
             </div>
+            <p class="control-hint">
+              情境代表不同全球排放路徑；時段代表未來 20 年平均。這裡看的雨量是
+              <strong>年最大一日降雨量</strong>，也就是一年中雨下得最大的一天。
+            </p>
+          </div>
+          <div class="predictor-status" id="query-context" aria-live="polite">
+            <div><span>目前圖層</span><strong>雨量增加多少</strong></div>
+            <div><span>有效格點</span><strong>-</strong></div>
+            <div><span>相對高風險格點</span><strong>-</strong></div>
           </div>
           <div class="canvas-panel">
             <canvas id="prediction-map" width="960" height="760" aria-label="臺灣格點預測地圖"></canvas>
+            <div class="map-tooltip" id="map-tooltip" hidden></div>
             <div class="map-legend" id="map-legend"></div>
           </div>
         </div>
+      </section>
 
-        <aside class="query-panel">
-          <section class="control-panel">
-            <p class="eyebrow">Region</p>
+      <section class="insight-panel reveal">
+          <section class="control-panel card-small">
+            <p class="eyebrow">區域</p>
             <label for="region-select">行政區摘要</label>
             <select id="region-select">
               <option value="">載入中...</option>
             </select>
+            <p class="helper-text">選縣市後，右側摘要會改成該縣市內所有格點的平均結果。</p>
           </section>
 
-          <section class="result-panel" aria-live="polite">
-            <p class="eyebrow">Grid Query</p>
+          <section class="model-note card-medium">
+            <p class="eyebrow">閱讀方式</p>
+            <h2>三個圖層怎麼看</h2>
+            <p>
+              <strong>雨量增加多少</strong>：未來最大單日雨量比過去多或少多少。
+              <strong>未來單日最大雨量</strong>：把過去基準雨量加上模型估計的增加量。
+              <strong>相對風險排序</strong>：只表示在全臺格點中相對偏高，不是即時警戒燈號。
+            </p>
+          </section>
+
+          <section class="result-panel card-large">
+            <p class="eyebrow">報告主軸</p>
+            <h2>四個研究問題</h2>
+            <div class="question-grid">
+              <div><span>1</span><strong>哪些氣候指標最能解釋 Rx1day 增加？</strong></div>
+              <div><span>2</span><strong>哪些縣市同時有高降雨增加與高溫變化？</strong></div>
+              <div><span>3</span><strong>不同 SSP 下風險排序是否穩定？</strong></div>
+              <div><span>4</span><strong>哪些縣市在多情境下都屬於高相對風險？</strong></div>
+            </div>
+          </section>
+
+          <section class="result-panel card-half">
+            <p class="eyebrow">問題一</p>
+            <h2>最能解釋雨量增加的氣候指標</h2>
+            <p class="helper-text">把 XGBoost 特徵重要度依六個氣候指標加總，包含該格點本身與鄰近格點平均訊號。</p>
+            <div class="compact-bars" id="insight-feature-importance"></div>
+          </section>
+
+          <section class="result-panel card-half">
+            <p class="eyebrow">問題二</p>
+            <h2>降雨與高溫一起偏高的縣市</h2>
+            <p class="helper-text">綜合「雨量增加排名」與「暖晝、高溫持續指數排名」，找出複合型熱點。</p>
+            <div class="rank-list" id="compound-hotspots"></div>
+          </section>
+
+          <section class="result-panel card-half">
+            <p class="eyebrow">問題三</p>
+            <h2>不同 SSP 下風險排序是否穩定</h2>
+            <p class="helper-text">比較同一時段四個 SSP 的縣市風險排名；穩定代表不管情境怎麼換，排序仍相近。</p>
+            <div class="stability-panel" id="scenario-stability"></div>
+          </section>
+
+          <section class="result-panel card-half">
+            <p class="eyebrow">問題四</p>
+            <h2>多情境都需要注意的縣市</h2>
+            <p class="helper-text">若某縣市在某 SSP 進入縣市風險前 25%，就記一次；出現越多次，代表結論越穩健。</p>
+            <div class="rank-list" id="multi-scenario-risk"></div>
+          </section>
+
+          <section class="result-panel card-large" aria-live="polite">
+            <p class="eyebrow">選取地點</p>
             <h2 id="grid-title">點選地圖格點</h2>
+            <p class="helper-text">這裡顯示你點到的格點，在目前情境與時段下的單日最大雨量估計。</p>
             <div class="result-grid" id="grid-result">
-              <div><span>基準期 Rx1day</span><strong>-</strong></div>
-              <div><span>預測變化量</span><strong>-</strong></div>
-              <div><span>未來預測值</span><strong>-</strong></div>
-              <div><span>風險等級</span><strong>-</strong></div>
+              <div><span>過去基準雨量</span><strong>-</strong></div>
+              <div><span>可能增加雨量</span><strong>-</strong></div>
+              <div><span>未來單日最大雨量</span><strong>-</strong></div>
+              <div><span>相對風險排序</span><strong>-</strong></div>
             </div>
           </section>
 
-          <section class="result-panel">
-            <p class="eyebrow">Region Summary</p>
+          <section class="result-panel card-large">
+            <p class="eyebrow">區域摘要</p>
             <h2 id="region-title">-</h2>
+            <p class="helper-text">平均值是把此範圍內所有格點一起平均，不代表每個地方都一樣。</p>
             <div class="result-grid" id="region-result">
-              <div><span>平均變化量</span><strong>-</strong></div>
-              <div><span>平均未來值</span><strong>-</strong></div>
-              <div><span>最大變化量</span><strong>-</strong></div>
-              <div><span>高風險占比</span><strong>-</strong></div>
+              <div><span>平均增加雨量</span><strong>-</strong></div>
+              <div><span>平均未來雨量</span><strong>-</strong></div>
+              <div><span>最大增加雨量</span><strong>-</strong></div>
+              <div><span>相對高風險占比</span><strong>-</strong></div>
             </div>
           </section>
 
-          <section class="model-note">
-            <p class="eyebrow">Model</p>
+          <section class="result-panel card-half">
+            <p class="eyebrow">優先注意</p>
+            <h2>需要優先注意的縣市</h2>
+            <p class="helper-text">依「相對高風險格點占比」排序，表示在目前情境下落在全臺前段的格點比例。</p>
+            <div class="rank-list" id="region-ranking"></div>
+          </section>
+
+          <section class="result-panel card-half">
+            <p class="eyebrow">時間趨勢</p>
+            <h2>這個地點會怎麼變</h2>
+            <p class="helper-text">同一排放情境下，比較近未來、中未來、遠未來的雨量增加幅度。</p>
+            <div class="sparkline-panel" id="grid-trend"></div>
+          </section>
+
+          <section class="result-panel card-large">
+            <p class="eyebrow">情境比較</p>
+            <h2>同格點情境比較</h2>
+            <p class="helper-text">同一個地點在不同排放情境與時段下的估計結果。</p>
+            <div class="mini-table-wrap">
+              <table class="mini-table" id="scenario-comparison-table">
+                <thead>
+                  <tr>
+                    <th>情境</th>
+                    <th>時段</th>
+                    <th>增加雨量</th>
+                    <th>相對排序</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="4">點選格點後顯示</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="result-panel card-half">
+            <p class="eyebrow">模型參考資料</p>
+            <h2>模型參考了哪些氣候訊號</h2>
+            <p class="helper-text">這些不是一般使用者必須解讀的結果，而是模型用來輔助判斷的氣候變化指標。</p>
+            <div class="feature-detail-grid" id="feature-detail-grid"></div>
+          </section>
+
+          <section class="model-note card-half">
+            <p class="eyebrow">模型提醒</p>
             <h2>XGBoost + predictor spatial lag</h2>
             <p>
               前端資料來自 <code>grid_predictions.json</code> 與 <code>region_predictions.json</code>。
-              行政區摘要已用縣市邊界預先聚合；風險等級依同一情境時段下全臺預測變化量分位數切為低、中、高。
+              「相對風險排序」不是即時災害警報，而是把同一情境、同一時段下的全臺格點依雨量增加幅度排序：
+              前三分之一標為高，中間三分之一標為中，後三分之一標為低。
             </p>
           </section>
-        </aside>
       </section>
     </main>
 
