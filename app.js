@@ -344,7 +344,7 @@
     function renderReportInsights() {
       renderInsightFeatureImportance();
       renderCompoundHotspots();
-      renderScenarioStability();
+      renderRiskSourceTypes();
       renderMultiScenarioRisk();
     }
 
@@ -710,20 +710,17 @@
     function renderCompoundHotspots() {
       const target = document.getElementById("compound-hotspots");
       if (!target) return;
-      const rows = (state.insights?.compound_hotspots || [])
-        .filter((row) => row.scenario === state.scenario && row.period === state.period)
-        .sort((a, b) => a.compound_rank - b.compound_rank)
-        .slice(0, 5);
+      const rows = aggregateCompoundHotspots(state.insights?.compound_hotspots || []).slice(0, 5);
       if (!rows.length) {
         target.innerHTML = "<small>尚未產生複合熱點資料。</small>";
         return;
       }
       target.innerHTML = rows
         .map(
-          (row) => `
+          (row, index) => `
             <button class="rank-row" type="button" data-region-id="${escapeHtml(row.region_id)}">
-              <span>${row.compound_rank}</span>
-              <strong>${escapeHtml(row.region_name)}<br><small>雨量 ${formatSigned(row.mean_change_pred, 1)} mm；高溫分位 P${formatNumber(row.temp_percentile, 0)}</small></strong>
+              <span>${index + 1}</span>
+              <strong>${escapeHtml(row.region_name)}<br><small>12 組中 ${row.hotspot_count} 次進入複合前段；雨量 P${formatNumber(row.rain_percentile, 0)}、高溫 P${formatNumber(row.temp_percentile, 0)}</small></strong>
               <small>${formatNumber(row.compound_score, 0)}分</small>
             </button>
           `
@@ -732,33 +729,37 @@
       bindInsightRegionButtons(target);
     }
 
-    function renderScenarioStability() {
-      const target = document.getElementById("scenario-stability");
+    function renderRiskSourceTypes() {
+      const target = document.getElementById("risk-source-panel");
       if (!target) return;
-      const summary = (state.insights?.scenario_stability?.summary || []).find((row) => row.period === state.period);
-      const rows = (state.insights?.scenario_stability?.regions || [])
-        .filter((row) => row.period === state.period)
-        .sort((a, b) => b.mean_high_risk_share - a.mean_high_risk_share || a.mean_rank - b.mean_rank)
-        .slice(0, 4);
-      if (!summary || !rows.length) {
-        target.innerHTML = "<small>尚未產生 SSP 穩定度資料。</small>";
+      const groups = aggregateRiskSourceTypes();
+      if (!groups.length) {
+        target.innerHTML = "<small>尚未產生風險來源分類資料。</small>";
         return;
       }
       target.innerHTML = `
-        <div class="insight-summary">
-          <span>四個 SSP 排名相關</span>
-          <strong>${formatNumber(summary.mean_pairwise_spearman, 2)}</strong>
-          <small>${escapeHtml(summary.interpretation)}</small>
-        </div>
-        <div class="rank-list">
-          ${rows
+        <div class="risk-source-list">
+          ${groups
             .map(
-              (row, index) => `
-                <button class="rank-row" type="button" data-region-id="${escapeHtml(row.region_id)}">
-                  <span>${index + 1}</span>
-                  <strong>${escapeHtml(row.region_name)}<br><small>平均名次 ${formatNumber(row.mean_rank, 1)}；最好第 ${formatNumber(row.best_rank, 0)}，最差第 ${formatNumber(row.worst_rank, 0)}</small></strong>
-                  <small>穩定 ${formatPercent(row.stability_score)}</small>
-                </button>
+              (row) => `
+                <div class="risk-source-group">
+                  <div>
+                    <strong>${escapeHtml(row.label)}</strong>
+                    <small>${escapeHtml(row.description)}</small>
+                  </div>
+                  <div class="source-county-list">
+                    ${row.items
+                      .map(
+                        (item) => `
+                          <button type="button" data-region-id="${escapeHtml(item.region_id)}">
+                            <strong>${escapeHtml(item.region_name)}</strong>
+                            <small>雨量 P${formatNumber(item.rain_percentile, 0)} / 高溫 P${formatNumber(item.temp_percentile, 0)}</small>
+                          </button>
+                        `
+                      )
+                      .join("")}
+                  </div>
+                </div>
               `
             )
             .join("")}
@@ -770,12 +771,9 @@
     function renderMultiScenarioRisk() {
       const target = document.getElementById("multi-scenario-risk");
       if (!target) return;
-      const rows = (state.insights?.multi_scenario_high_risk || [])
-        .filter((row) => row.period === state.period && row.high_scenario_count > 0)
-        .sort((a, b) => b.high_scenario_count - a.high_scenario_count || a.mean_rank - b.mean_rank)
-        .slice(0, 5);
+      const rows = aggregateMultiScenarioRisk(state.insights?.multi_scenario_high_risk || []).slice(0, 5);
       if (!rows.length) {
-        target.innerHTML = "<small>此時段沒有縣市在多個 SSP 都進入前 25%。</small>";
+        target.innerHTML = "<small>沒有縣市在整合情境中進入前 25%。</small>";
         return;
       }
       target.innerHTML = rows
@@ -783,13 +781,124 @@
           (row, index) => `
             <button class="rank-row" type="button" data-region-id="${escapeHtml(row.region_id)}">
               <span>${index + 1}</span>
-              <strong>${escapeHtml(row.region_name)}<br><small>${row.high_scenarios.map(escapeHtml).join("、")}</small></strong>
-              <small>${row.high_scenario_count}/4 情境</small>
+              <strong>${escapeHtml(row.region_name)}<br><small>${row.active_period_count}/3 個時段曾進入前段；進入前段時平均增加 ${formatSigned(row.mean_change_pred, 1)} mm</small></strong>
+              <small>${row.high_scenario_count}/12 組前段</small>
             </button>
           `
         )
         .join("");
       bindInsightRegionButtons(target);
+    }
+
+    function aggregateCompoundHotspots(rows) {
+      const thresholds = new Map();
+      rows.forEach((row) => {
+        const key = `${row.scenario}|${row.period}`;
+        const current = thresholds.get(key) || 0;
+        thresholds.set(key, Math.max(current, Number(row.compound_rank) || 0));
+      });
+      thresholds.forEach((maxRank, key) => {
+        thresholds.set(key, Math.max(1, Math.ceil(maxRank * 0.25)));
+      });
+
+      const groups = new Map();
+      rows.forEach((row) => {
+        const group = getAggregateGroup(groups, row);
+        const key = `${row.scenario}|${row.period}`;
+        group.count += 1;
+        group.compound_score += Number(row.compound_score) || 0;
+        group.mean_change_pred += Number(row.mean_change_pred) || 0;
+        group.rain_percentile += Number(row.rain_percentile) || 0;
+        group.temp_percentile += Number(row.temp_percentile) || 0;
+        group.hotspot_count += Number(row.compound_rank) <= thresholds.get(key) ? 1 : 0;
+      });
+
+      return Array.from(groups.values())
+        .map((row) => ({
+          ...row,
+          compound_score: row.compound_score / Math.max(row.count, 1),
+          mean_change_pred: row.mean_change_pred / Math.max(row.count, 1),
+          rain_percentile: row.rain_percentile / Math.max(row.count, 1),
+          temp_percentile: row.temp_percentile / Math.max(row.count, 1),
+        }))
+        .sort((a, b) => b.hotspot_count - a.hotspot_count || b.compound_score - a.compound_score);
+    }
+
+    function aggregateMultiScenarioRisk(rows) {
+      const groups = new Map();
+      rows.forEach((row) => {
+        const group = getAggregateGroup(groups, row);
+        group.count += 1;
+        group.high_scenario_count += Number(row.high_scenario_count) || 0;
+        group.active_period_count += Number(row.high_scenario_count) > 0 ? 1 : 0;
+        group.mean_rank += Number(row.mean_rank) || 0;
+        group.mean_change_pred += Number(row.mean_change_pred) || 0;
+        group.mean_high_risk_share += Number(row.mean_high_risk_share) || 0;
+      });
+
+      return Array.from(groups.values())
+        .filter((row) => row.high_scenario_count > 0)
+        .map((row) => ({
+          ...row,
+          mean_rank: row.mean_rank / Math.max(row.count, 1),
+          mean_change_pred: row.mean_change_pred / Math.max(row.count, 1),
+          mean_high_risk_share: row.mean_high_risk_share / Math.max(row.count, 1),
+        }))
+        .sort((a, b) => b.high_scenario_count - a.high_scenario_count || a.mean_rank - b.mean_rank);
+    }
+
+    function aggregateRiskSourceTypes() {
+      const rows = aggregateCompoundHotspots(state.insights?.compound_hotspots || []);
+      const compound = rows
+        .filter((row) => row.compound_score >= 55 && Math.abs(row.rain_percentile - row.temp_percentile) <= 25)
+        .sort((a, b) => b.compound_score - a.compound_score)
+        .slice(0, 3);
+      const rainLed = rows
+        .filter((row) => row.rain_percentile >= 65 && row.rain_percentile - row.temp_percentile >= 25)
+        .sort((a, b) => b.rain_percentile - a.rain_percentile)
+        .slice(0, 3);
+      const heatLed = rows
+        .filter((row) => row.temp_percentile >= 65 && row.temp_percentile - row.rain_percentile >= 25)
+        .sort((a, b) => b.temp_percentile - a.temp_percentile)
+        .slice(0, 3);
+
+      return [
+        {
+          label: "複合型",
+          description: "雨量與高溫分位都不低，且兩者差距較小",
+          items: compound,
+        },
+        {
+          label: "雨量主導型",
+          description: "雨量分位明顯高於高溫分位",
+          items: rainLed,
+        },
+        {
+          label: "高溫主導型",
+          description: "高溫分位明顯高於雨量分位",
+          items: heatLed,
+        },
+      ].filter((row) => row.items.length);
+    }
+
+    function getAggregateGroup(groups, row) {
+      if (!groups.has(row.region_id)) {
+        groups.set(row.region_id, {
+          region_id: row.region_id,
+          region_name: row.region_name,
+          count: 0,
+          compound_score: 0,
+          mean_change_pred: 0,
+          rain_percentile: 0,
+          temp_percentile: 0,
+          hotspot_count: 0,
+          high_scenario_count: 0,
+          active_period_count: 0,
+          mean_rank: 0,
+          mean_high_risk_share: 0,
+        });
+      }
+      return groups.get(row.region_id);
     }
 
     function bindInsightRegionButtons(target) {

@@ -100,7 +100,7 @@
             <div class="question-grid">
               <div><span>1</span><strong>哪些氣候指標最能解釋 Rx1day 增加？</strong></div>
               <div><span>2</span><strong>哪些縣市同時有高降雨增加與高溫變化？</strong></div>
-              <div><span>3</span><strong>不同 SSP 下風險排序是否穩定？</strong></div>
+              <div><span>3</span><strong>高風險縣市的風險來源是什麼？</strong></div>
               <div><span>4</span><strong>哪些縣市在多情境下都屬於高相對風險？</strong></div>
             </div>
           </section>
@@ -109,27 +109,47 @@
             <p class="eyebrow">問題一</p>
             <h2>最能解釋雨量增加的氣候指標</h2>
             <p class="helper-text">把 XGBoost 特徵重要度依六個氣候指標加總，包含該格點本身與鄰近格點平均訊號。</p>
+            <div class="formula-note">
+              <strong>百分比怎麼來</strong>
+              <span>這是 XGBoost 的特徵重要度比例，不是雨量增加百分比。</span>
+              <span>同一指標會把本格點變化量與鄰近格點平均變化量加總，例如 SDII_change + SDII_change_lag。</span>
+              <span>六個氣候指標的重要度加總後正規化成 100%；比例越高，代表模型越常依賴該訊號降低預測誤差。</span>
+              <span>這是模型解釋用指標，不代表因果效果。</span>
+            </div>
             <div class="compact-bars" id="insight-feature-importance"></div>
           </section>
 
           <section class="result-panel card-half">
             <p class="eyebrow">問題二</p>
             <h2>降雨與高溫一起偏高的縣市</h2>
-            <p class="helper-text">綜合「雨量增加排名」與「暖晝、高溫持續指數排名」，找出複合型熱點。</p>
+            <p class="helper-text">整合 4 個 SSP × 3 個時段，綜合「雨量增加排名」與「暖晝、高溫持續指數排名」，找出長期複合型熱點。</p>
+            <div class="formula-note">
+              <strong>複合分數公式</strong>
+              <span>雨量分位 = 縣市平均雨量增加量在同組情境時段中的百分位。</span>
+              <span>高溫分位 =（暖晝天數分位 + 高溫持續指數分位）/ 2。</span>
+              <span>複合分數 =（雨量分位 + 高溫分位）/ 2；每組最高 100 分，畫面顯示 12 組平均。</span>
+            </div>
             <div class="rank-list" id="compound-hotspots"></div>
           </section>
 
           <section class="result-panel card-half">
             <p class="eyebrow">問題三</p>
-            <h2>不同 SSP 下風險排序是否穩定</h2>
-            <p class="helper-text">比較同一時段四個 SSP 的縣市風險排名；穩定代表不管情境怎麼換，排序仍相近。</p>
-            <div class="stability-panel" id="scenario-stability"></div>
+            <h2>高風險縣市的風險來源</h2>
+            <p class="helper-text">用 12 組 SSP × 時段的平均雨量分位與高溫分位分類，區分哪些縣市是複合型、雨量主導型或高溫主導型。</p>
+            <div class="risk-source-panel" id="risk-source-panel"></div>
           </section>
 
           <section class="result-panel card-half">
             <p class="eyebrow">問題四</p>
             <h2>多情境都需要注意的縣市</h2>
-            <p class="helper-text">若某縣市在某 SSP 進入縣市風險前 25%，就記一次；出現越多次，代表結論越穩健。</p>
+            <p class="helper-text">整合 12 組 SSP × 時段；若某縣市進入該組縣市風險前 25%，就記一次。</p>
+            <div class="formula-note">
+              <strong>這裡怎麼判斷</strong>
+              <span>12 組 = 4 個 SSP × 3 個未來時段。</span>
+              <span>每一組都把縣市依「相對高風險格點占比」排序，進入前 25% 就記 1 次。</span>
+              <span>例如 10/12 組代表這個縣市在大多數情境與時段都落在前段；3/3 個時段代表近、中、遠未來都曾進入前段。</span>
+              <span>這表示結果比較穩健，不是只在單一情境下突出。</span>
+            </div>
             <div class="rank-list" id="multi-scenario-risk"></div>
           </section>
 
